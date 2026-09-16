@@ -1,3 +1,6 @@
 spring:
   application:
     name: product-service
+
+  mongodb:
+    uri: mongodb+srv://nguyenhongthai06092005_db_user:KHxpkPNFOvKRmx6f@cluster0.qpndcaf.mongodb.net/productdb?appName=Cluster0
