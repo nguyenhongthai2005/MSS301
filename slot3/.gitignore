@@ -1,0 +1,7 @@
+# Bỏ qua các file tài liệu và file nén không cần thiết
+*.zip
+*.docx
+*.txt
+
+# Bỏ qua các thư mục giải nén
+doc_unzipped/

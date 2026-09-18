@@ -34,4 +34,21 @@ public class ProductService {
                 .price(product.getPrice())
                 .build()).collect(Collectors.toList());
     }
+    public void updateProduct(String id, ProductRequest productRequest) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
+
+        product.setName(productRequest.getName());
+        product.setDescription(productRequest.getDescription());
+        product.setPrice(productRequest.getPrice());
+
+        productRepository.save(product);
+    }
+
+    public void deleteProduct(String id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
+        
+        productRepository.delete(product);
+    }
 }
