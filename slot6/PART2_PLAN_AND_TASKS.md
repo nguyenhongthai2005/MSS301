@@ -354,20 +354,20 @@ flowchart LR
 
 | Mã Task | Tên Task | Trạng thái | Ghi chú |
 | :--- | :--- | :---: | :--- |
-| **0.1** | Kéo 2 folder `order-service` & `inventory-service` | ⏳ Đang đợi User | Cần kéo vào thư mục `slot6` |
-| **0.2** | Khởi động MySQL Docker | ⏳ Chưa bắt đầu | Port 3306 |
-| **1.1** | Cấu hình pom.xml (BOM & Feign) | ⏳ Chưa bắt đầu | `order-service` |
-| **1.2** | Tạo `InventoryClient.java` | ⏳ Chưa bắt đầu | Package `.client` |
-| **1.3** | Cấu hình `inventory.url` | ⏳ Chưa bắt đầu | `application.properties` |
-| **1.4** | Gọi Feign trong `OrderService.java` | ⏳ Chưa bắt đầu | Kiểm tra tồn kho trước khi save |
-| **1.5** | Thêm `@EnableFeignClients` | ⏳ Chưa bắt đầu | `OrderServiceApplication.java` |
-| **1.6** | Build compile xác nhận | ⏳ Chưa bắt đầu | `mvn clean compile` |
-| **2.1** | Thêm dependency WireMock | ⏳ Chưa bắt đầu | Scope test |
-| **2.2** | Tạo `InventoryStubs.java` | ⏳ Chưa bắt đầu | Stub GET /api/inventory |
-| **2.3** | Cấu hình test properties WireMock | ⏳ Chưa bắt đầu | Port random `${wiremock.server.port}` |
-| **2.4** | Viết lại `OrderServiceApplicationTests` | ⏳ Chưa bắt đầu | AutoConfigureWireMock |
-| **2.5** | Chạy `mvn test` xác nhận | ⏳ Chưa bắt đầu | Integration test pass 100% |
-| **3.1** | Chạy `inventory-service` (8082) | ⏳ Chưa bắt đầu | Manual test |
-| **3.2** | Chạy `order-service` (8081) | ⏳ Chưa bắt đầu | Manual test |
-| **3.3** | Test Case 1: Đủ hàng (201) | ⏳ Chưa bắt đầu | Postman / curl |
-| **3.4** | Test Case 2: Thiếu hàng (500/400 + Rollback) | ⏳ Chưa bắt đầu | Postman / curl |
+| **0.1** | Kéo 2 folder `order-service` & `inventory-service` | ✅ Hoàn thành | Đã có trong `slot6` |
+| **0.2** | Khởi động MySQL Docker | ✅ Hoàn thành | Đang chạy port 3306 |
+| **1.1** | Cấu hình pom.xml (BOM & Feign) | ✅ Hoàn thành | `order-service/pom.xml` |
+| **1.2** | Tạo `InventoryClient.java` | ✅ Hoàn thành | Package `com.fudn.orderservice.client` |
+| **1.3** | Cấu hình `inventory.url` | ✅ Hoàn thành | `application.properties` (8082) |
+| **1.4** | Gọi Feign trong `OrderService.java` | ✅ Hoàn thành | Kiểm tra tồn kho trước khi save |
+| **1.5** | Thêm `@EnableFeignClients` | ✅ Hoàn thành | `OrderServiceApplication.java` |
+| **1.6** | Build compile xác nhận | ✅ Hoàn thành | `BUILD SUCCESS` |
+| **2.1** | Thêm dependency WireMock | ✅ Hoàn thành | `spring-cloud-starter-contract-stub-runner` |
+| **2.2** | Tạo `InventoryStubs.java` | ✅ Hoàn thành | Stub GET `/api/inventory` |
+| **2.3** | Cấu hình test properties WireMock | ✅ Hoàn thành | Port random `${wiremock.server.port}` |
+| **2.4** | Viết lại `OrderServiceApplicationTests` | ✅ Hoàn thành | `@AutoConfigureWireMock` + WireMock stub |
+| **2.5** | Chạy `mvn test` xác nhận | ✅ Hoàn thành | Test pass 100%, 0 failures |
+| **3.1** | Chạy `inventory-service` (8082) | ⏳ Sẵn sàng | Manual test |
+| **3.2** | Chạy `order-service` (8081) | ⏳ Sẵn sàng | Manual test |
+| **3.3** | Test Case 1: Đủ hàng (201) | ⏳ Sẵn sàng | Postman / curl |
+| **3.4** | Test Case 2: Thiếu hàng (500/400 + Rollback) | ⏳ Sẵn sàng | Postman / curl |
