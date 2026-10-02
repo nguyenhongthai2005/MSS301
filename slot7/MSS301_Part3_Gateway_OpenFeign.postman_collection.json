@@ -1,0 +1,394 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "MSS301 - Part 3 (OpenFeign, WireMock, API Gateway)",
+		"description": "Postman Collection kiểm thử đầy đủ các chức năng của Part 3:\n1. Gọi API qua API Gateway (:9000)\n2. Kiểm tra OpenFeign gọi từ Order sang Inventory\n3. Gọi trực tiếp các service nền để đối chiếu",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "gateway_url",
+			"value": "http://localhost:9000",
+			"type": "string"
+		},
+		{
+			"key": "product_service_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "order_service_url",
+			"value": "http://localhost:8081",
+			"type": "string"
+		},
+		{
+			"key": "inventory_service_url",
+			"value": "http://localhost:8082",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "01. API Gateway (:9000 - Cổng duy nhất)",
+			"description": "Các request gọi tập trung qua API Gateway cổng 9000 để Gateway tự động điều hướng sang các Microservices tương ứng.",
+			"item": [
+				{
+					"name": "01.1 Lấy danh sách sản phẩm (via Gateway)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is an array of products\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an(\"array\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway_url}}/api/products",
+							"host": [
+								"{{gateway_url}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "01.2 Tạo sản phẩm mới (via Gateway)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"iPhone 15 Pro\",\n    \"description\": \"Apple flagship smartphone with A17 Pro\",\n    \"price\": 1200\n}"
+						},
+						"url": {
+							"raw": "{{gateway_url}}/api/products",
+							"host": [
+								"{{gateway_url}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "01.3 Kiểm tra tồn kho - CÒN HÀNG (via Gateway)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body should be true\", function () {",
+									"    pm.expect(pm.response.text()).to.eql(\"true\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway_url}}/api/inventory?skuCode=iphone_15&quantity=100",
+							"host": [
+								"{{gateway_url}}"
+							],
+							"path": [
+								"api",
+								"inventory"
+							],
+							"query": [
+								{
+									"key": "skuCode",
+									"value": "iphone_15"
+								},
+								{
+									"key": "quantity",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "01.4 Kiểm tra tồn kho - HẾT HÀNG (via Gateway)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body should be false\", function () {",
+									"    pm.expect(pm.response.text()).to.eql(\"false\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway_url}}/api/inventory?skuCode=iphone_15&quantity=101",
+							"host": [
+								"{{gateway_url}}"
+							],
+							"path": [
+								"api",
+								"inventory"
+							],
+							"query": [
+								{
+									"key": "skuCode",
+									"value": "iphone_15"
+								},
+								{
+									"key": "quantity",
+									"value": "101"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "01.5 Đặt hàng THÀNH CÔNG (via Gateway - OpenFeign check OK)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Order placed message\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Order Placed Successfully\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"skuCode\": \"iphone_15\",\n    \"price\": 1000,\n    \"quantity\": 1\n}"
+						},
+						"url": {
+							"raw": "{{gateway_url}}/api/order",
+							"host": [
+								"{{gateway_url}}"
+							],
+							"path": [
+								"api",
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "01.6 Đặt hàng THẤT BẠI do hết hàng (via Gateway - OpenFeign chặn)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 500 (or 409)\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([500, 409]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"skuCode\": \"iphone_15\",\n    \"price\": 1000,\n    \"quantity\": 1000\n}"
+						},
+						"url": {
+							"raw": "{{gateway_url}}/api/order",
+							"host": [
+								"{{gateway_url}}"
+							],
+							"path": [
+								"api",
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "01.7 Gateway Route không tồn tại (404 Not Found)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404 Not Found\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway_url}}/api/khong-co-route-nay",
+							"host": [
+								"{{gateway_url}}"
+							],
+							"path": [
+								"api",
+								"khong-co-route-nay"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "02. Direct Services (Gọi trực tiếp từng Service)",
+			"description": "Gọi trực tiếp tới từng port nội bộ để đối chiếu và kiểm tra độc lập từng service.",
+			"item": [
+				{
+					"name": "02.1 Inventory Direct - Còn hàng (:8082)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{inventory_service_url}}/api/inventory?skuCode=iphone_15&quantity=100",
+							"host": [
+								"{{inventory_service_url}}"
+							],
+							"path": [
+								"api",
+								"inventory"
+							],
+							"query": [
+								{
+									"key": "skuCode",
+									"value": "iphone_15"
+								},
+								{
+									"key": "quantity",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02.2 Order Direct - Đặt hàng gọi Feign sang Inventory (:8081)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"skuCode\": \"iphone_15\",\n    \"price\": 1000,\n    \"quantity\": 1\n}"
+						},
+						"url": {
+							"raw": "{{order_service_url}}/api/order",
+							"host": [
+								"{{order_service_url}}"
+							],
+							"path": [
+								"api",
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02.3 Product Direct - Lấy danh sách sản phẩm (:8080)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{product_service_url}}/api/products",
+							"host": [
+								"{{product_service_url}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
