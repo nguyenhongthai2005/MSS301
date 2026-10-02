@@ -1,0 +1,386 @@
+{
+	"info": {
+		"_postman_id": "slot6-microservices-openfeign-collection",
+		"name": "MSS301 - Slot 6: OpenFeign & Microservices Testing",
+		"description": "Postman Collection kiểm thử trọn bộ 3 dịch vụ trong Slot 6: Order Service (OpenFeign), Inventory Service và Product Service theo Part2_OpenFegin_Guide.md.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Order Service (Port 8081)",
+			"description": "Các request kiểm thử giao tiếp đồng bộ OpenFeign từ Order Service sang Inventory Service.",
+			"item": [
+				{
+					"name": "1.1 Đặt đơn hàng - Đủ tồn kho (Kỳ vọng 201 Created)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"skuCode\": \"iphone_15\",\n  \"price\": 1000,\n  \"quantity\": 100\n}"
+						},
+						"url": {
+							"raw": "{{order_service_url}}/api/order",
+							"host": [
+								"{{order_service_url}}"
+							],
+							"path": [
+								"api",
+								"order"
+							]
+						},
+						"description": "Test Case 1 theo tài liệu Part2_OpenFegin_Guide.md: Đặt đơn với số lượng tồn kho hợp lệ (100). Order Service gọi OpenFeign sang Inventory Service -> trả true -> lưu đơn vào DB và trả về 201 Created."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response body confirms order placement\", function () {",
+									"    pm.expect(pm.response.text()).to.eql(\"Order Placed Successfully\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "1.2 Đặt đơn hàng - Vượt tồn kho (Kỳ vọng 500 / 400 & Rollback DB)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"skuCode\": \"iphone_15\",\n  \"price\": 1000,\n  \"quantity\": 101\n}"
+						},
+						"url": {
+							"raw": "{{order_service_url}}/api/order",
+							"host": [
+								"{{order_service_url}}"
+							],
+							"path": [
+								"api",
+								"order"
+							]
+						},
+						"description": "Test Case 2 theo tài liệu Part2_OpenFegin_Guide.md: Đặt 101 chiếc trong khi tồn kho chỉ có 100. OpenFeign trả false -> throw RuntimeException -> Server báo lỗi và không ghi record mới vào bảng t_orders."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 500 or 400 (Out of stock error)\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([500, 400]);",
+									"});",
+									"",
+									"pm.test(\"Response body indicates out of stock\", function () {",
+									"    var responseText = pm.response.text();",
+									"    pm.expect(responseText).to.include(\"not in stock\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "1.3 Đặt đơn hàng - Sản phẩm Pixel 8 (1 chiếc)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"skuCode\": \"pixel_8\",\n  \"price\": 899.99,\n  \"quantity\": 1\n}"
+						},
+						"url": {
+							"raw": "{{order_service_url}}/api/order",
+							"host": [
+								"{{order_service_url}}"
+							],
+							"path": [
+								"api",
+								"order"
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response message matches\", function () {",
+									"    pm.expect(pm.response.text()).to.eql(\"Order Placed Successfully\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "2. Inventory Service (Port 8082)",
+			"description": "Kiểm thử trực tiếp API kiểm tra tồn kho của Inventory Service.",
+			"item": [
+				{
+					"name": "2.1 Kiểm tra tồn kho - Đủ hàng (Kỳ vọng true)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{inventory_service_url}}/api/inventory?skuCode=iphone_15&quantity=100",
+							"host": [
+								"{{inventory_service_url}}"
+							],
+							"path": [
+								"api",
+								"inventory"
+							],
+							"query": [
+								{
+									"key": "skuCode",
+									"value": "iphone_15"
+								},
+								{
+									"key": "quantity",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Gọi trực tiếp endpoint tồn kho của iphone_15 với quantity 100."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is boolean true\", function () {",
+									"    pm.expect(pm.response.text()).to.eql(\"true\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "2.2 Kiểm tra tồn kho - Hết hàng / Vượt tồn (Kỳ vọng false)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{inventory_service_url}}/api/inventory?skuCode=iphone_15&quantity=101",
+							"host": [
+								"{{inventory_service_url}}"
+							],
+							"path": [
+								"api",
+								"inventory"
+							],
+							"query": [
+								{
+									"key": "skuCode",
+									"value": "iphone_15"
+								},
+								{
+									"key": "quantity",
+									"value": "101"
+								}
+							]
+						},
+						"description": "Gọi trực tiếp endpoint tồn kho với quantity vượt quá 100."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is boolean false\", function () {",
+									"    pm.expect(pm.response.text()).to.eql(\"false\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "2.3 Kiểm tra tồn kho - pixel_8",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{inventory_service_url}}/api/inventory?skuCode=pixel_8&quantity=1",
+							"host": [
+								"{{inventory_service_url}}"
+							],
+							"path": [
+								"api",
+								"inventory"
+							],
+							"query": [
+								{
+									"key": "skuCode",
+									"value": "pixel_8"
+								},
+								{
+									"key": "quantity",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "3. Product Service (Port 8080)",
+			"description": "Kiểm thử các API CRUD của Product Service lưu trên MongoDB.",
+			"item": [
+				{
+					"name": "3.1 Lấy danh sách sản phẩm",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{product_service_url}}/api/products",
+							"host": [
+								"{{product_service_url}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "3.2 Tạo sản phẩm mới",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"prod_01\",\n  \"name\": \"iPhone 15 Pro\",\n  \"description\": \"Apple Flagship 2024\",\n  \"price\": 1200\n}"
+						},
+						"url": {
+							"raw": "{{product_service_url}}/api/products",
+							"host": [
+								"{{product_service_url}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains product details\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.name).to.eql(\"iPhone 15 Pro\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "order_service_url",
+			"value": "http://localhost:8081",
+			"type": "string"
+		},
+		{
+			"key": "inventory_service_url",
+			"value": "http://localhost:8082",
+			"type": "string"
+		},
+		{
+			"key": "product_service_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
