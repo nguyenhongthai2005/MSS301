@@ -10,12 +10,18 @@ import com.fudn.movieservice.repository.ShowtimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ShowtimeService {
 
+    /** Gia tri khong trung voi _id nao -> dung khi tao moi (khong loai tru ban ghi nao) */
     private static final String NO_EXCLUDE = "";
 
     private final ShowtimeRepository showtimeRepository;
@@ -23,6 +29,22 @@ public class ShowtimeService {
     private final RoomRepository roomRepository;
     private final MovieService movieService;
     private final RoomService roomService;
+
+    // TODO 6.4: loc theo movieId va/hoac ngay chieu
+    public List<ShowtimeResponse> search(String movieId, LocalDate date) {
+        List<Showtime> showtimes = (movieId == null || movieId.isBlank())
+                ? showtimeRepository.findAllByOrderByStartTimeAsc()
+                : showtimeRepository.findByMovieIdOrderByStartTimeAsc(movieId);
+        List<Showtime> filtered = showtimes.stream()
+                .filter(s -> date == null || s.getStartTime().toLocalDate().equals(date))
+                .toList();
+        return toResponses(filtered);
+    }
+
+    public ShowtimeResponse getById(String id) {
+        Showtime s = find(id);
+        return ShowtimeResponse.from(s, movieService.find(s.getMovieId()), roomService.find(s.getRoomId()));
+    }
 
     // TODO 6.3
     public ShowtimeResponse create(ShowtimeRequest request) {
@@ -39,14 +61,21 @@ public class ShowtimeService {
         return apply(showtime, request, id);
     }
 
+    // TODO 6.4 – BR06: soft delete
+    public void cancel(String id) {
+        Showtime showtime = find(id);
+        showtime.setShowtimeStatus(ShowtimeStatus.CANCELLED);
+        showtimeRepository.save(showtime);
+    }
+
     public Showtime find(String id) {
         return showtimeRepository.findById(id)
                 .orElseThrow(() -> ApiException.notFound("Showtime not found with id: " + id));
     }
 
     private ShowtimeResponse apply(Showtime showtime, ShowtimeRequest request, String excludeId) {
-        Movie movie = movieService.find(request.movieId()); // BR15: 404
-        CinemaRoom room = roomService.find(request.roomId()); // BR15: 404
+        Movie movie = movieService.find(request.movieId()); // BR15
+        CinemaRoom room = roomService.find(request.roomId()); // BR15
 
         // BR04
         if (movie.getMovieStatus() == MovieStatus.ENDED) {
@@ -75,5 +104,18 @@ public class ShowtimeService {
         showtime.setEndTime(endTime);
         showtime.setTicketPrice(request.ticketPrice());
         return ShowtimeResponse.from(showtimeRepository.save(showtime), movie, room);
+    }
+
+    /** Application-side join cho danh sach: lay movies & rooms lien quan bang 2 query findAllById */
+    private List<ShowtimeResponse> toResponses(List<Showtime> showtimes) {
+        Map<String, Movie> movies = movieRepository
+                .findAllById(showtimes.stream().map(Showtime::getMovieId).distinct().toList())
+                .stream().collect(Collectors.toMap(Movie::getMovieId, Function.identity()));
+        Map<String, CinemaRoom> rooms = roomRepository
+                .findAllById(showtimes.stream().map(Showtime::getRoomId).distinct().toList())
+                .stream().collect(Collectors.toMap(CinemaRoom::getRoomId, Function.identity()));
+        return showtimes.stream()
+                .map(s -> ShowtimeResponse.from(s, movies.get(s.getMovieId()), rooms.get(s.getRoomId())))
+                .toList();
     }
 }
