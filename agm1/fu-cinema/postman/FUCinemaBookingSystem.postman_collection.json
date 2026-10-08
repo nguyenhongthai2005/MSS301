@@ -1192,6 +1192,522 @@
           }
         }
       ]
+    },
+    {
+      "name": "04-Genre-Room (Direct Port 8082)",
+      "description": "Folder test trực tiếp quản lý Thể loại và Phòng chiếu (F4) trên movie-service (Port 8082)",
+      "item": [
+        {
+          "name": "4.1 - Danh Sach Tat Ca The Loai (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const arr = pm.response.json();",
+                  "pm.test(\"Has seeded genres\", () => pm.expect(arr.length).to.be.at.least(5));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/genres",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "genres"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.2 - Chi Tiet The Loai (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Genre details\", () => pm.expect(json.genreName).to.eql(\"Khoa học viễn tưởng\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/genres/{{seedGenreScifiId}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "genres",
+                "{{seedGenreScifiId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.3 - Tao The Loai Moi (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const ts = Date.now();",
+                  "pm.environment.set(\"newGenreName\", \"The Loai \" + ts);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Created genre has id\", () => pm.expect(json.genreId).to.be.a(\"string\"));",
+                  "pm.environment.set(\"genreId\", json.genreId);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"genreName\": \"{{newGenreName}}\",\n  \"description\": \"The loai phim thu nghiem\"\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/genres",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "genres"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.4 - Tao The Loai Trung Ten (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409 Conflict\", () => pm.response.to.have.status(409));",
+                  "const err = pm.response.json();",
+                  "pm.test(\"Conflict error message\", () => pm.expect(err.message).to.include(\"already exists\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"genreName\": \"Hành động\",\n  \"description\": \"Trung ten\"\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/genres",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "genres"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.5 - Cap Nhat The Loai (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"genreId\")) {",
+                  "    pm.environment.set(\"genreId\", \"66f000000000000000000001\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Updated description\", () => pm.expect(json.description).to.eql(\"Mo ta da cap nhat\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"genreName\": \"{{newGenreName}} (Updated)\",\n  \"description\": \"Mo ta da cap nhat\"\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/genres/{{genreId}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "genres",
+                "{{genreId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.6 - Xoa The Loai Dang Co Phim (BR03 - Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409 Conflict\", () => pm.response.to.have.status(409));",
+                  "const err = pm.response.json();",
+                  "pm.test(\"BR03 rejection message\", () => {",
+                  "    pm.expect(err.message).to.include(\"Cannot delete genre that still has movies\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/genres/{{seedGenreScifiId}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "genres",
+                "{{seedGenreScifiId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.7 - Xoa The Loai Hop Le (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"genreId\")) {",
+                  "    pm.environment.set(\"genreId\", \"66f000000000000000000001\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 204 No Content\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/genres/{{genreId}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "genres",
+                "{{genreId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.8 - Danh Sach Tat Ca Phong Chieu (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const arr = pm.response.json();",
+                  "pm.test(\"Has seeded rooms\", () => pm.expect(arr.length).to.be.at.least(4));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/rooms",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "rooms"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.9 - Chi Tiet Phong Chieu (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Room name is Room 02\", () => pm.expect(json.roomName).to.eql(\"Room 02\"));",
+                  "pm.test(\"totalSeats is 48\", () => pm.expect(json.totalSeats).to.eql(48));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/rooms/{{seedRoom2Id}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "rooms",
+                "{{seedRoom2Id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.10 - Tao Phong Chieu Tinh Dung TotalSeats (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const ts = Date.now();",
+                  "pm.environment.set(\"newRoomName\", \"Room \" + ts);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"totalSeats = 8 * 12 = 96\", () => pm.expect(json.totalSeats).to.eql(96));",
+                  "pm.environment.set(\"roomId\", json.roomId);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomName\": \"{{newRoomName}}\",\n  \"roomType\": \"IMAX\",\n  \"seatRows\": 8,\n  \"seatsPerRow\": 12,\n  \"roomStatus\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/rooms",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "rooms"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.11 - Cap Nhat Phong Chieu (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"roomId\")) {",
+                  "    pm.environment.set(\"roomId\", \"66f100000000000000000001\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"totalSeats updated = 10 * 12 = 120\", () => pm.expect(json.totalSeats).to.eql(120));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomName\": \"{{newRoomName}} (VIP)\",\n  \"roomType\": \"IMAX\",\n  \"seatRows\": 10,\n  \"seatsPerRow\": 12,\n  \"roomStatus\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/rooms/{{roomId}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "rooms",
+                "{{roomId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.12 - Xoa Phong Chieu Dang Co Suat Chieu (BR03 - Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409 Conflict\", () => pm.response.to.have.status(409));",
+                  "const err = pm.response.json();",
+                  "pm.test(\"BR03 rejection message\", () => {",
+                  "    pm.expect(err.message).to.include(\"Cannot delete room that already has showtimes\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/rooms/{{seedRoom2Id}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "rooms",
+                "{{seedRoom2Id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.13 - Xoa Phong Chieu Hop Le (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"roomId\")) {",
+                  "    pm.environment.set(\"roomId\", \"66f100000000000000000001\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 204 No Content\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/rooms/{{roomId}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "rooms",
+                "{{roomId}}"
+              ]
+            }
+          }
+        }
+      ]
     }
   ]
 }
