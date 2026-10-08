@@ -63,6 +63,45 @@
           }
         },
         {
+          "name": "1.1b - Login Admin Ngan Gon (admin / 123)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Role is ADMIN\", () => pm.expect(json.role).to.eql(\"ADMIN\"));",
+                  "pm.test(\"Has Bearer token\", () => {",
+                  "    pm.expect(json.tokenType).to.eql(\"Bearer\");",
+                  "    pm.expect(json.accessToken.split(\".\")).to.have.lengthOf(3);",
+                  "});",
+                  "pm.environment.set(\"adminToken\", json.accessToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin\",\n  \"password\": \"123\"\n}"
+            },
+            "url": {
+              "raw": "{{customerService}}/api/auth/login",
+              "host": ["{{customerService}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
           "name": "1.2 - Login Customer (Direct)",
           "event": [
             {

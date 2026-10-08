@@ -31,9 +31,14 @@ public class AuthService {
     private String adminPassword;
 
     public LoginResponse login(LoginRequest request) {
-        // (1) Admin: so sanh voi application.properties
-        if (adminEmail.equalsIgnoreCase(request.email())) {
-            if (!adminPassword.equals(request.password())) {
+        // (1) Admin: kiem tra admin mac dinh trong application.properties HOAC tai khoan admin rut gon (admin / 123)
+        boolean isOfficialAdmin = adminEmail.equalsIgnoreCase(request.email());
+        boolean isShortAdmin = "admin".equalsIgnoreCase(request.email()) || "admin@gmail.com".equalsIgnoreCase(request.email());
+
+        if (isOfficialAdmin || isShortAdmin) {
+            boolean validPass = (isOfficialAdmin && adminPassword.equals(request.password()))
+                    || (isShortAdmin && ("123".equals(request.password()) || adminPassword.equals(request.password())));
+            if (!validPass) {
                 throw ApiException.unauthorized("Invalid email or password");
             }
             return buildResponse(ADMIN_ID, adminEmail, "Administrator", ROLE_ADMIN);
