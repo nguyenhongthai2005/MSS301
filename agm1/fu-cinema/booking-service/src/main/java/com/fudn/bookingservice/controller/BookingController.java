@@ -2,12 +2,16 @@ package com.fudn.bookingservice.controller;
 
 import com.fudn.bookingservice.dto.BookingResponse;
 import com.fudn.bookingservice.dto.CreateBookingRequest;
+import com.fudn.bookingservice.dto.ReportResponse;
 import com.fudn.bookingservice.dto.SeatMapResponse;
 import com.fudn.bookingservice.service.BookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -43,6 +47,14 @@ public class BookingController {
     @GetMapping
     public java.util.List<BookingResponse> getAll() {
         return bookingService.getAll();
+    }
+
+    // ADMIN
+    @GetMapping("/report")
+    public ReportResponse report(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return bookingService.report(startDate, endDate);
     }
 
     // Owner hoac ADMIN
