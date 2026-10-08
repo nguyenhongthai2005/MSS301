@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "cinema_rooms")
@@ -17,10 +18,19 @@ public class CinemaRoom {
     @Id
     private String roomId;
 
+    @Indexed(unique = true)
     private String roomName;
 
     private RoomType roomType;
     private Integer seatRows;
     private Integer seatsPerRow;
     private RoomStatus roomStatus;
+
+    /** Gia tri tinh toan - Spring Data map theo field nen KHONG luu vao document */
+    public int getTotalSeats() {
+        if (seatRows == null || seatsPerRow == null) {
+            return 0;
+        }
+        return seatRows * seatsPerRow;
+    }
 }
