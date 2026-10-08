@@ -42,12 +42,29 @@ public class BookingService {
                 st.seatRows(), st.seatsPerRow(), totalSeats, totalSeats - booked.size(), booked);
     }
 
+    private static final String ROLE_ADMIN = "ADMIN";
+
     // ======================= F8: HISTORY & CANCEL =======================
 
     // TODO 8.1
     public List<BookingResponse> getMyBookings(Long customerId) {
         return bookingRepository.findByCustomerIdOrderByBookingDateDesc(customerId)
                 .stream().map(BookingResponse::from).toList();
+    }
+
+    // TODO 8.2
+    public BookingResponse getById(Long bookingId, Long userId, String role) {
+        return BookingResponse.from(findAccessible(bookingId, userId, role));
+    }
+
+    /** BR11: Customer chi truy cap booking cua minh, Admin truy cap tat ca */
+    private Booking findAccessible(Long bookingId, Long userId, String role) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> ApiException.notFound("Booking not found with id: " + bookingId));
+        if (!ROLE_ADMIN.equals(role) && !booking.getCustomerId().equals(userId)) {
+            throw ApiException.forbidden("You can only access your own bookings");
+        }
+        return booking;
     }
 
     // ======================= F7: CREATE BOOKING =======================
