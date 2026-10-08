@@ -2444,6 +2444,695 @@
           }
         }
       ]
+    },
+    {
+      "name": "07-Booking (Direct Port 8083)",
+      "item": [
+        {
+          "name": "7.1 - So Do Ghe Suat Chieu (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const res = pm.response.json();",
+                  "pm.test(\"Returns seat map properties\", () => {",
+                  "    pm.expect(res.showtimeId).to.eql(\"66f300000000000000000001\");",
+                  "    pm.expect(res.seatRows).to.eql(8);",
+                  "    pm.expect(res.seatsPerRow).to.eql(10);",
+                  "    pm.expect(res.totalSeats).to.eql(80);",
+                  "    pm.expect(res).to.have.property(\"availableSeats\");",
+                  "    pm.expect(res).to.have.property(\"bookedSeats\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{bookingService}}/api/bookings/showtimes/66f300000000000000000001/seats",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "showtimes",
+                "66f300000000000000000001",
+                "seats"
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.2 - So Do Ghe Khong Ton Tai - 404 (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{bookingService}}/api/bookings/showtimes/{{notFoundId}}/seats",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "showtimes",
+                "{{notFoundId}}",
+                "seats"
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.3 - Dat Ve Thanh Cong (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "const res = pm.response.json();",
+                  "pm.test(\"Booking created with confirmed status\", () => {",
+                  "    pm.expect(res.bookingStatus).to.eql(\"CONFIRMED\");",
+                  "    pm.expect(res.details.length).to.eql(2);",
+                  "    pm.expect(res.totalPrice).to.eql(300000);",
+                  "});",
+                  "pm.environment.set(\"bookingId\", res.bookingId);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"showtimeId\": \"66f300000000000000000002\",\n      \"seatCode\": \"C1\"\n    },\n    {\n      \"showtimeId\": \"66f300000000000000000002\",\n      \"seatCode\": \"C2\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{bookingService}}/api/bookings",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.4 - Dat Ve Trung Ghe Trong Request - 400 (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"showtimeId\": \"66f300000000000000000002\",\n      \"seatCode\": \"D1\"\n    },\n    {\n      \"showtimeId\": \"66f300000000000000000002\",\n      \"seatCode\": \"D1\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{bookingService}}/api/bookings",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.5 - Dat Ve Ghe Da Co Nguoi Dat - 409 (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"showtimeId\": \"66f300000000000000000002\",\n      \"seatCode\": \"C1\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{bookingService}}/api/bookings",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.6 - Dat Ve Ghe Khong Ton Tai - 400 (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"showtimeId\": \"66f300000000000000000002\",\n      \"seatCode\": \"Z99\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{bookingService}}/api/bookings",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.7 - Dat Ve Suat Chieu Da Huy - 400 (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"showtimeId\": \"66f300000000000000000005\",\n      \"seatCode\": \"A1\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{bookingService}}/api/bookings",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "08-Booking-History-Cancel (Direct Port 8083)",
+      "item": [
+        {
+          "name": "8.1 - Lich Su Dat Ve Khach Hang (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const arr = pm.response.json();",
+                  "pm.test(\"Returns list of my bookings\", () => {",
+                  "    pm.expect(arr.length).to.be.at.least(1);",
+                  "    pm.expect(arr[0].customerId).to.eql(1);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              }
+            ],
+            "url": {
+              "raw": "{{bookingService}}/api/bookings/my",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "my"
+              ]
+            }
+          }
+        },
+        {
+          "name": "8.2 - Admin Xem Tat Ca Ve Dat (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const arr = pm.response.json();",
+                  "pm.test(\"Returns all bookings\", () => pm.expect(arr.length).to.be.at.least(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{bookingService}}/api/bookings",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "8.3 - Xem Chi Tiet Ve Chinh Chu (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const res = pm.response.json();",
+                  "pm.test(\"Matches requested booking id\", () => {",
+                  "    pm.expect(res.bookingId.toString()).to.eql(pm.environment.get(\"bookingId\").toString());",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              },
+              {
+                "key": "X-User-Role",
+                "value": "CUSTOMER"
+              }
+            ],
+            "url": {
+              "raw": "{{bookingService}}/api/bookings/{{bookingId}}",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "{{bookingId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "8.4 - Xem Chi Tiet Khong Phai Chu Ve - 403 (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "2"
+              },
+              {
+                "key": "X-User-Role",
+                "value": "CUSTOMER"
+              }
+            ],
+            "url": {
+              "raw": "{{bookingService}}/api/bookings/{{bookingId}}",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "{{bookingId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "8.5 - Admin Xem Chi Tiet Ve Bat Ky (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "99"
+              },
+              {
+                "key": "X-User-Role",
+                "value": "ADMIN"
+              }
+            ],
+            "url": {
+              "raw": "{{bookingService}}/api/bookings/{{bookingId}}",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "{{bookingId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "8.6 - Chi Tiet Ve Khong Ton Tai - 404 (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              },
+              {
+                "key": "X-User-Role",
+                "value": "CUSTOMER"
+              }
+            ],
+            "url": {
+              "raw": "{{bookingService}}/api/bookings/999999",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "999999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "8.7 - Khach Hang Huy Ve Truoc 2 Gio (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const res = pm.response.json();",
+                  "pm.test(\"Status updated to CANCELLED\", () => {",
+                  "    pm.expect(res.bookingStatus).to.eql(\"CANCELLED\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              },
+              {
+                "key": "X-User-Role",
+                "value": "CUSTOMER"
+              }
+            ],
+            "url": {
+              "raw": "{{bookingService}}/api/bookings/{{bookingId}}/cancel",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "{{bookingId}}",
+                "cancel"
+              ]
+            }
+          }
+        },
+        {
+          "name": "8.8 - Huy Lai Ve Da Huy - 400 (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              },
+              {
+                "key": "X-User-Role",
+                "value": "CUSTOMER"
+              }
+            ],
+            "url": {
+              "raw": "{{bookingService}}/api/bookings/{{bookingId}}/cancel",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "{{bookingId}}",
+                "cancel"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "09-Report (Direct Port 8083)",
+      "item": [
+        {
+          "name": "9.1 - Bao Cao Doanh Thu Theo Khoang Ngay (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const res = pm.response.json();",
+                  "pm.test(\"Returns report data\", () => {",
+                  "    pm.expect(res).to.have.property(\"totalRevenue\");",
+                  "    pm.expect(res).to.have.property(\"totalBookings\");",
+                  "    pm.expect(res).to.have.property(\"revenueByMovie\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{bookingService}}/api/bookings/report?startDate=2026-01-01&endDate=2026-12-31",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "report"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-12-31"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "9.2 - Bao Cao Khoang Ngay Khong Hop Le - 400 (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{bookingService}}/api/bookings/report?startDate=2026-12-31&endDate=2026-01-01",
+              "host": [
+                "{{bookingService}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "report"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2026-12-31"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-01-01"
+                }
+              ]
+            }
+          }
+        }
+      ]
     }
   ]
 }
