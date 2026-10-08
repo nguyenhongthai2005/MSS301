@@ -441,6 +441,274 @@
           }
         }
       ]
+    },
+    {
+      "name": "02-Customer (Direct Port 8081)",
+      "description": "Folder test trực tiếp customer profile và register trên port 8081",
+      "item": [
+        {
+          "name": "2.1 - Register Khach Hang Moi (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.environment.set(\"newEmail\", \"user\" + Date.now() + \"@gmail.com\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Status ACTIVE\", () => pm.expect(json.customerStatus).to.eql(\"ACTIVE\"));",
+                  "pm.test(\"Password is NOT returned\", () => pm.expect(json).to.not.have.property(\"password\"));",
+                  "pm.environment.set(\"newCustomerId\", json.customerId);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Phạm Thị Dung\",\n  \"telephone\": \"0987654321\",\n  \"email\": \"{{newEmail}}\",\n  \"customerBirthday\": \"2004-03-15\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{customerService}}/api/customers/register",
+              "host": ["{{customerService}}"],
+              "path": ["api", "customers", "register"]
+            }
+          }
+        },
+        {
+          "name": "2.2 - Register Trung Email (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409\", () => pm.response.to.have.status(409));",
+                  "const err = pm.response.json();",
+                  "pm.test(\"Conflict error body\", () => {",
+                  "    pm.expect(err.error).to.eql(\"Conflict\");",
+                  "    pm.expect(err.message).to.include(\"already in use\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Nguyễn Trùng Email\",\n  \"telephone\": \"0987654321\",\n  \"email\": \"an@gmail.com\",\n  \"customerBirthday\": \"2000-01-01\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{customerService}}/api/customers/register",
+              "host": ["{{customerService}}"],
+              "path": ["api", "customers", "register"]
+            }
+          }
+        },
+        {
+          "name": "2.3 - Register Validation Error (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "const msg = pm.response.json().message;",
+                  "[\"customerName\", \"telephone\", \"email\", \"customerBirthday\", \"password\"].forEach(f => {",
+                  "    pm.test(`Message mentions ${f}`, () => pm.expect(msg).to.include(f));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"\",\n  \"telephone\": \"123\",\n  \"email\": \"invalid-email\",\n  \"customerBirthday\": \"2099-01-01\",\n  \"password\": \"1\"\n}"
+            },
+            "url": {
+              "raw": "{{customerService}}/api/customers/register",
+              "host": ["{{customerService}}"],
+              "path": ["api", "customers", "register"]
+            }
+          }
+        },
+        {
+          "name": "2.5 - Xem Profile /me (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Email matches an@gmail.com\", () => pm.expect(json.email).to.eql(\"an@gmail.com\"));",
+                  "pm.test(\"No password returned\", () => pm.expect(json).to.not.have.property(\"password\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              }
+            ],
+            "url": {
+              "raw": "{{customerService}}/api/customers/me",
+              "host": ["{{customerService}}"],
+              "path": ["api", "customers", "me"]
+            }
+          }
+        },
+        {
+          "name": "2.6 - Cap Nhat Profile /me (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Name updated with Unicode\", () => pm.expect(json.customerName).to.include(\"Nguyễn Văn An\"));",
+                  "pm.test(\"Telephone updated\", () => pm.expect(json.telephone).to.eql(\"0905999999\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Nguyễn Văn An (updated)\",\n  \"telephone\": \"0905999999\",\n  \"customerBirthday\": \"2002-05-10\"\n}"
+            },
+            "url": {
+              "raw": "{{customerService}}/api/customers/me",
+              "host": ["{{customerService}}"],
+              "path": ["api", "customers", "me"]
+            }
+          }
+        },
+        {
+          "name": "2.7 - Doi Mat Khau Sai Pass Cu (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "const err = pm.response.json();",
+                  "pm.test(\"Message incorrect password\", () => pm.expect(err.message).to.include(\"Old password is incorrect\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"sai-pass\",\n  \"newPassword\": \"654321\"\n}"
+            },
+            "url": {
+              "raw": "{{customerService}}/api/customers/me/password",
+              "host": ["{{customerService}}"],
+              "path": ["api", "customers", "me", "password"]
+            }
+          }
+        },
+        {
+          "name": "2.8 - Doi Mat Khau Dung Pass Cu (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"123456\",\n  \"newPassword\": \"654321\"\n}"
+            },
+            "url": {
+              "raw": "{{customerService}}/api/customers/me/password",
+              "host": ["{{customerService}}"],
+              "path": ["api", "customers", "me", "password"]
+            }
+          }
+        }
+      ]
     }
   ]
 }
