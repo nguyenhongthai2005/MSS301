@@ -57,8 +57,14 @@
             },
             "url": {
               "raw": "{{customerService}}/api/auth/login",
-              "host": ["{{customerService}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -96,8 +102,14 @@
             },
             "url": {
               "raw": "{{customerService}}/api/auth/login",
-              "host": ["{{customerService}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -132,8 +144,14 @@
             },
             "url": {
               "raw": "{{customerService}}/api/auth/login",
-              "host": ["{{customerService}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -169,8 +187,14 @@
             },
             "url": {
               "raw": "{{customerService}}/api/auth/login",
-              "host": ["{{customerService}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -206,8 +230,14 @@
             },
             "url": {
               "raw": "{{customerService}}/api/auth/login",
-              "host": ["{{customerService}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -243,8 +273,14 @@
             },
             "url": {
               "raw": "{{customerService}}/api/auth/login",
-              "host": ["{{customerService}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         }
@@ -288,8 +324,14 @@
             },
             "url": {
               "raw": "{{gateway}}/api/auth/login",
-              "host": ["{{gateway}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{gateway}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -324,8 +366,14 @@
             },
             "url": {
               "raw": "{{gateway}}/api/auth/login",
-              "host": ["{{gateway}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{gateway}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -361,8 +409,14 @@
             },
             "url": {
               "raw": "{{gateway}}/api/auth/login",
-              "host": ["{{gateway}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{gateway}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -398,8 +452,14 @@
             },
             "url": {
               "raw": "{{gateway}}/api/auth/login",
-              "host": ["{{gateway}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{gateway}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -435,8 +495,14 @@
             },
             "url": {
               "raw": "{{gateway}}/api/auth/login",
-              "host": ["{{gateway}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{gateway}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         }
@@ -486,8 +552,14 @@
             },
             "url": {
               "raw": "{{customerService}}/api/customers/register",
-              "host": ["{{customerService}}"],
-              "path": ["api", "customers", "register"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "register"
+              ]
             }
           }
         },
@@ -523,8 +595,14 @@
             },
             "url": {
               "raw": "{{customerService}}/api/customers/register",
-              "host": ["{{customerService}}"],
-              "path": ["api", "customers", "register"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "register"
+              ]
             }
           }
         },
@@ -559,8 +637,14 @@
             },
             "url": {
               "raw": "{{customerService}}/api/customers/register",
-              "host": ["{{customerService}}"],
-              "path": ["api", "customers", "register"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "register"
+              ]
             }
           }
         },
@@ -590,8 +674,14 @@
             ],
             "url": {
               "raw": "{{customerService}}/api/customers/me",
-              "host": ["{{customerService}}"],
-              "path": ["api", "customers", "me"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "me"
+              ]
             }
           }
         },
@@ -629,8 +719,14 @@
             },
             "url": {
               "raw": "{{customerService}}/api/customers/me",
-              "host": ["{{customerService}}"],
-              "path": ["api", "customers", "me"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "me"
+              ]
             }
           }
         },
@@ -667,8 +763,15 @@
             },
             "url": {
               "raw": "{{customerService}}/api/customers/me/password",
-              "host": ["{{customerService}}"],
-              "path": ["api", "customers", "me", "password"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "me",
+                "password"
+              ]
             }
           }
         },
@@ -703,8 +806,388 @@
             },
             "url": {
               "raw": "{{customerService}}/api/customers/me/password",
-              "host": ["{{customerService}}"],
-              "path": ["api", "customers", "me", "password"]
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "me",
+                "password"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03-Admin-Customer (Direct Port 8081)",
+      "description": "Folder test trực tiếp chức năng Quản trị Khách hàng (F3) trên customer-service (Port 8081)",
+      "item": [
+        {
+          "name": "3.1 - Admin List Tat Ca Customers (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const arr = pm.response.json();",
+                  "pm.test(\"Response is array\", () => pm.expect(arr).to.be.an(\"array\"));",
+                  "pm.test(\"Has customer items\", () => pm.expect(arr.length).to.be.at.least(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerService}}/api/customers",
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.2 - Admin Search Customers Theo Keyword (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const arr = pm.response.json();",
+                  "pm.test(\"Search returns matching customers\", () => {",
+                  "    pm.expect(arr).to.be.an(\"array\");",
+                  "    pm.expect(arr.length).to.be.at.least(1);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerService}}/api/customers?keyword=An",
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers"
+              ],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "An"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.3 - Admin Xem Chi Tiet Customer (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Customer detail matches ID 1\", () => {",
+                  "    pm.expect(json.customerId).to.eql(1);",
+                  "    pm.expect(json.email).to.eql(\"an@gmail.com\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerService}}/api/customers/1",
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.4 - Admin Xem Chi Tiet Customer Khong Ton Tai (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", () => pm.response.to.have.status(404));",
+                  "const err = pm.response.json();",
+                  "pm.test(\"Error status 404\", () => pm.expect(err.status).to.eql(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerService}}/api/customers/99999",
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "99999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.5 - Admin Tao Moi Customer (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const ts = Date.now();",
+                  "pm.environment.set(\"adminNewEmail\", \"admincreated\" + ts + \"@gmail.com\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Created customer has ID and ACTIVE status\", () => {",
+                  "    pm.expect(json.customerId).to.be.a(\"number\");",
+                  "    pm.expect(json.email).to.eql(pm.environment.get(\"adminNewEmail\"));",
+                  "    pm.expect(json.customerStatus).to.eql(\"ACTIVE\");",
+                  "    pm.expect(json).to.not.have.property(\"password\");",
+                  "});",
+                  "pm.environment.set(\"adminCreatedId\", String(json.customerId));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Admin Created User\",\n  \"telephone\": \"0988777666\",\n  \"email\": \"{{adminNewEmail}}\",\n  \"customerBirthday\": \"2000-01-01\",\n  \"password\": \"Password123\",\n  \"customerStatus\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{customerService}}/api/customers",
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.6 - Admin Tao Moi Customer Trung Email (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409\", () => pm.response.to.have.status(409));",
+                  "const err = pm.response.json();",
+                  "pm.test(\"Error code 409 Conflict\", () => pm.expect(err.status).to.eql(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Admin Created Duplicate\",\n  \"telephone\": \"0988777666\",\n  \"email\": \"an@gmail.com\",\n  \"customerBirthday\": \"2000-01-01\",\n  \"password\": \"Password123\",\n  \"customerStatus\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{customerService}}/api/customers",
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.7 - Admin Cap Nhat Customer (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"adminCreatedId\")) {",
+                  "    pm.environment.set(\"adminCreatedId\", \"1\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Updated customer information\", () => {",
+                  "    pm.expect(json.customerName).to.include(\"Updated\");",
+                  "    pm.expect(json.telephone).to.eql(\"0988999888\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Admin Created User (Updated)\",\n  \"telephone\": \"0988999888\",\n  \"customerBirthday\": \"2000-05-05\",\n  \"customerStatus\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{customerService}}/api/customers/{{adminCreatedId}}",
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "{{adminCreatedId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.8 - Admin Xoa Mem (Soft Delete) Customer (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"adminCreatedId\")) {",
+                  "    pm.environment.set(\"adminCreatedId\", \"1\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 204 No Content\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{customerService}}/api/customers/{{adminCreatedId}}",
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "{{adminCreatedId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.9 - Kiem Tra Sau Xoa Mem Trang Thai La INACTIVE (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"adminCreatedId\")) {",
+                  "    pm.environment.set(\"adminCreatedId\", \"1\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Status after soft delete is INACTIVE\", () => {",
+                  "    pm.expect(json.customerStatus).to.eql(\"INACTIVE\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerService}}/api/customers/{{adminCreatedId}}",
+              "host": [
+                "{{customerService}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "{{adminCreatedId}}"
+              ]
             }
           }
         }
