@@ -1,0 +1,10 @@
+target/
+# du lieu cua cac container database (MySQL, MongoDB) - KHONG commit
+docker/
+fu-cinema/docker/
+.idea/
+*.iml
+.vscode/
+*.log
+.DS_Store
+~$*.docx
