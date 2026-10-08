@@ -1708,6 +1708,742 @@
           }
         }
       ]
+    },
+    {
+      "name": "05-Movie (Direct Port 8082)",
+      "description": "Folder test trực tiếp chức năng Quản lý Phim (F5) trên movie-service (Port 8082)",
+      "item": [
+        {
+          "name": "5.1 - Danh Sach Tat Ca Phim (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const arr = pm.response.json();",
+                  "pm.test(\"Has seeded movies\", () => pm.expect(arr.length).to.be.at.least(4));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/movies",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "movies"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.2 - Tim Kiem Phim Theo Keyword va Status (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const arr = pm.response.json();",
+                  "pm.test(\"Filter returns Galaxy Rangers\", () => {",
+                  "    pm.expect(arr.length).to.be.at.least(1);",
+                  "    pm.expect(arr[0].title).to.include(\"Galaxy\");",
+                  "    pm.expect(arr[0].genreName).to.eql(\"Khoa học viễn tưởng\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/movies?keyword=galaxy&status=NOW_SHOWING",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "movies"
+              ],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "galaxy"
+                },
+                {
+                  "key": "status",
+                  "value": "NOW_SHOWING"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.3 - Chi Tiet Phim (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Movie detail fields\", () => {",
+                  "    pm.expect(json.title).to.eql(\"Galaxy Rangers\");",
+                  "    pm.expect(json.durationMinutes).to.eql(125);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/movies/66f200000000000000000001",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "movies",
+                "66f200000000000000000001"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.4 - Tao Phim Moi (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const ts = Date.now();",
+                  "pm.environment.set(\"newMovieTitle\", \"Movie \" + ts);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Created movie has id and genreName\", () => {",
+                  "    pm.expect(json.movieId).to.be.a(\"string\");",
+                  "    pm.expect(json.genreName).to.eql(\"Khoa học viễn tưởng\");",
+                  "});",
+                  "pm.environment.set(\"movieId\", json.movieId);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"{{newMovieTitle}}\",\n  \"description\": \"Phim khoa hoc vien tuong\",\n  \"director\": \"James Cameron\",\n  \"durationMinutes\": 135,\n  \"language\": \"English\",\n  \"ageRating\": \"T13\",\n  \"releaseDate\": \"2026-12-15\",\n  \"genreId\": \"66f000000000000000000005\",\n  \"movieStatus\": \"NOW_SHOWING\"\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/movies",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "movies"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.5 - Tao Phim GenreId Khong Ton Tai (BR15 - Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", () => pm.response.to.have.status(404));",
+                  "const err = pm.response.json();",
+                  "pm.test(\"Genre not found message\", () => pm.expect(err.message).to.include(\"Genre not found\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Phim Loi Genre\",\n  \"description\": \"Mo ta\",\n  \"director\": \"Dao dien\",\n  \"durationMinutes\": 100,\n  \"language\": \"Tieng Viet\",\n  \"ageRating\": \"P\",\n  \"releaseDate\": \"2026-10-01\",\n  \"genreId\": \"{{notFoundId}}\",\n  \"movieStatus\": \"NOW_SHOWING\"\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/movies",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "movies"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.6 - Cap Nhat Phim (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"movieId\")) {",
+                  "    pm.environment.set(\"movieId\", \"66f200000000000000000001\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Updated duration\", () => pm.expect(json.durationMinutes).to.eql(140));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"{{newMovieTitle}} (Updated)\",\n  \"description\": \"Mo ta cap nhat\",\n  \"director\": \"James Cameron\",\n  \"durationMinutes\": 140,\n  \"language\": \"English\",\n  \"ageRating\": \"T16\",\n  \"releaseDate\": \"2026-12-20\",\n  \"genreId\": \"66f000000000000000000005\",\n  \"movieStatus\": \"NOW_SHOWING\"\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/movies/{{movieId}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "movies",
+                "{{movieId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.7 - Xoa Phim Dang Co Suat Chieu (BR03 - Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409 Conflict\", () => pm.response.to.have.status(409));",
+                  "const err = pm.response.json();",
+                  "pm.test(\"BR03 movie delete rejection\", () => {",
+                  "    pm.expect(err.message).to.include(\"already has showtimes\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/movies/66f200000000000000000001",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "movies",
+                "66f200000000000000000001"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.8 - Xoa Phim Hop Le (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"movieId\")) {",
+                  "    pm.environment.set(\"movieId\", \"66f200000000000000000001\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 204 No Content\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/movies/{{movieId}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "movies",
+                "{{movieId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "06-Showtime (Direct Port 8082)",
+      "description": "Folder test trực tiếp chức năng Quản lý Suất chiếu (F6) trên movie-service (Port 8082)",
+      "item": [
+        {
+          "name": "6.1 - Danh Sach Tat Ca Suat Chieu (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const arr = pm.response.json();",
+                  "pm.test(\"Has seeded showtimes\", () => pm.expect(arr.length).to.be.at.least(5));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/showtimes",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "showtimes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.2 - Tim Kiem Suat Chieu Theo Ngay va Phim (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const arr = pm.response.json();",
+                  "pm.test(\"Found showtimes on 2026-12-20\", () => pm.expect(arr.length).to.be.at.least(2));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/showtimes?movieId=66f200000000000000000001&date=2026-12-20",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "showtimes"
+              ],
+              "query": [
+                {
+                  "key": "movieId",
+                  "value": "66f200000000000000000001"
+                },
+                {
+                  "key": "date",
+                  "value": "2026-12-20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.3 - Chi Tiet Suat Chieu (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Joined movie and room fields\", () => {",
+                  "    pm.expect(json.movieTitle).to.eql(\"Galaxy Rangers\");",
+                  "    pm.expect(json.roomName).to.eql(\"Room 01\");",
+                  "    pm.expect(json.ticketPrice).to.eql(95000);",
+                  "    pm.expect(json.seatRows).to.eql(8);",
+                  "    pm.expect(json.seatsPerRow).to.eql(10);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/showtimes/66f300000000000000000001",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "showtimes",
+                "66f300000000000000000001"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.4 - Tao Suat Chieu Tinh Dung EndTime (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Calculated endTime 125 mins later\", () => {",
+                  "    pm.expect(json.endTime).to.eql(\"2026-12-25T16:05:00\");",
+                  "    pm.expect(json.showtimeStatus).to.eql(\"SCHEDULED\");",
+                  "});",
+                  "pm.environment.set(\"showtimeId\", json.showtimeId);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieId\": \"66f200000000000000000001\",\n  \"roomId\": \"66f100000000000000000002\",\n  \"startTime\": \"2026-12-25T14:00:00\",\n  \"ticketPrice\": 120000\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/showtimes",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "showtimes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.5 - Tao Suat Chieu Trung Gio Cung Phong (BR05 - Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409 Conflict\", () => pm.response.to.have.status(409));",
+                  "const err = pm.response.json();",
+                  "pm.test(\"Overlapping error message\", () => pm.expect(err.message).to.include(\"already has a showtime\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieId\": \"66f200000000000000000001\",\n  \"roomId\": \"66f100000000000000000002\",\n  \"startTime\": \"2026-12-25T15:00:00\",\n  \"ticketPrice\": 120000\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/showtimes",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "showtimes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.6 - Tao Suat Chieu Phim Da Ended (BR04 - Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400 Bad Request\", () => pm.response.to.have.status(400));",
+                  "const err = pm.response.json();",
+                  "pm.test(\"Ended movie error message\", () => pm.expect(err.message).to.include(\"has ENDED\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieId\": \"66f200000000000000000004\",\n  \"roomId\": \"66f100000000000000000001\",\n  \"startTime\": \"2026-12-26T10:00:00\",\n  \"ticketPrice\": 95000\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/showtimes",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "showtimes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.7 - Tao Suat Chieu Phong Maintenance (BR04 - Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400 Bad Request\", () => pm.response.to.have.status(400));",
+                  "const err = pm.response.json();",
+                  "pm.test(\"Maintenance room error message\", () => pm.expect(err.message).to.include(\"is not ACTIVE\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieId\": \"66f200000000000000000001\",\n  \"roomId\": \"66f100000000000000000004\",\n  \"startTime\": \"2026-12-26T10:00:00\",\n  \"ticketPrice\": 95000\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/showtimes",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "showtimes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.8 - Cap Nhat Suat Chieu (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"showtimeId\")) {",
+                  "    pm.environment.set(\"showtimeId\", \"66f300000000000000000001\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Updated price\", () => pm.expect(json.ticketPrice).to.eql(130000));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieId\": \"66f200000000000000000001\",\n  \"roomId\": \"66f100000000000000000002\",\n  \"startTime\": \"2026-12-25T14:30:00\",\n  \"ticketPrice\": 130000\n}"
+            },
+            "url": {
+              "raw": "{{movieService}}/api/showtimes/{{showtimeId}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "showtimes",
+                "{{showtimeId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.9 - Huy Suat Chieu Soft Delete (BR06 - Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"showtimeId\")) {",
+                  "    pm.environment.set(\"showtimeId\", \"66f300000000000000000001\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 204 No Content\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/showtimes/{{showtimeId}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "showtimes",
+                "{{showtimeId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.10 - Kiem Tra Sau Huy Trang Thai La CANCELLED (Direct)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"showtimeId\")) {",
+                  "    pm.environment.set(\"showtimeId\", \"66f300000000000000000001\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Status is CANCELLED\", () => pm.expect(json.showtimeStatus).to.eql(\"CANCELLED\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{movieService}}/api/showtimes/{{showtimeId}}",
+              "host": [
+                "{{movieService}}"
+              ],
+              "path": [
+                "api",
+                "showtimes",
+                "{{showtimeId}}"
+              ]
+            }
+          }
+        }
+      ]
     }
   ]
 }
