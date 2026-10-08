@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients
+@EnableFeignClients // TODO 7.1: Enable OpenFeign client scanning
 public class BookingServiceApplication {
 
     public static void main(String[] args) {
