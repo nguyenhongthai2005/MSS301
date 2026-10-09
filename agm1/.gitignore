@@ -8,3 +8,4 @@ fu-cinema/docker/
 *.log
 .DS_Store
 ~$*.docx
+ ~WRL0005.tmp
