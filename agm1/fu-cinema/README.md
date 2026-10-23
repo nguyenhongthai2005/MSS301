@@ -71,17 +71,20 @@ curl http://localhost:9000/actuator/health
 
 ## 4. Hướng dẫn kiểm thử với Postman Collection Runner
 
-1. Mở Postman, chọn **Import** và nạp 2 file trong thư mục `fu-cinema/postman/`:
-   - `FUCinemaBookingSystem.postman_collection.json`
-   - `FUCinema-Local.postman_environment.json`
+### 4.1. Bộ sưu tập thuần Gateway (Khuyến nghị cho chấm bài / Test Gateway tập trung)
+Toàn bộ request được định tuyến qua duy nhất **API Gateway (Port 9000)** với cơ chế bảo mật JWT Bearer Token, phân quyền `ROLE_ADMIN` / `ROLE_CUSTOMER` và chống giả mạo header:
+1. Mở Postman, chọn **Import** 2 file:
+   - `fu-cinema/postman/FUCinemaBookingSystem-Gateway.postman_collection.json`
+   - `fu-cinema/postman/FUCinema-Gateway.postman_environment.json` (hoặc `FUCinema-Local.postman_environment.json`)
+2. Chọn môi trường: **FUCinema-Gateway**.
+3. Chuột phải vào collection `FUCinemaBookingSystem-Gateway` -> Chọn **Run collection** -> Nhấn **Run FUCinemaBookingSystem-Gateway**.
+
+### 4.2. Bộ sưu tập Direct Port Testing (Kiểm thử phân lập từng service)
+1. Nạp 2 file gốc:
+   - `fu-cinema/postman/FUCinemaBookingSystem.postman_collection.json`
+   - `fu-cinema/postman/FUCinema-Local.postman_environment.json`
 2. Chọn Environment: **FUCinema-Local**.
-3. Chạy thử nghiệm:
-   - **Direct Port Testing:** Hỗ trợ kiểm thử trực tiếp từng service backend tại các cổng 8081, 8082, 8083 để cô lập lỗi.
-   - **Gateway Testing (Port 9000):** Toàn bộ API được bảo vệ bởi Spring Security OAuth2 Resource Server. Token JWT được chuyển tiếp thông tin định danh qua header `X-User-Id`, `X-User-Email`, `X-User-Role` và ngăn chặn triệt để client giả mạo header (`UserHeaderFilter`).
-4. Để chạy tự động (Collection Runner):
-   - Chuột phải vào collection `FUCinemaBookingSystem` -> Chọn **Run collection**.
-   - Chọn môi trường **FUCinema-Local** -> Nhấn **Run FUCinemaBookingSystem**.
-   - Tất cả các test case đều đạt kết quả **Passed** (0 Failed).
+3. Hỗ trợ kiểm thử trực tiếp từng service backend tại các cổng 8081, 8082, 8083 để cô lập lỗi.
 
 ---
 
