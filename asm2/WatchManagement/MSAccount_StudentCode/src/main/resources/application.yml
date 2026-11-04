@@ -1,0 +1,24 @@
+# [TODO-2.2: datasource DBAccount + naming strategy]
+server:
+  port: 8081
+
+spring:
+  application:
+    name: ms-account
+  datasource:
+    url: jdbc:sqlserver://${DB_HOST:localhost}:${DB_PORT:1433};databaseName=DBAccount;encrypt=true;trustServerCertificate=true
+    username: ${DB_USER:sa}
+    password: ${DB_PASSWORD:sa}
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+      naming:
+        # Giữ NGUYÊN tên trong @Table/@Column (StoreAccounts, WatchID...) đúng như đề bài.
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: false
+
+logging:
+  level:
+    com.mss301.account: INFO
