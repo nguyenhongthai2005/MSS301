@@ -1,0 +1,26 @@
+# [TODO-0.2] Không commit file build, IDE và bí mật
+
+# Maven / Gradle / build
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.log
+.gradle/
+build/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# VS Code / Eclipse
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Bí mật: .env chứa mật khẩu DB và JWT secret -> chỉ commit .env.example
+.env
