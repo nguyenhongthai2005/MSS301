@@ -22,5 +22,8 @@ out/
 .DS_Store
 Thumbs.db
 
+# Aliases
+*_DE190299/
+
 # Bí mật: .env chứa mật khẩu DB và JWT secret -> chỉ commit .env.example
 .env
