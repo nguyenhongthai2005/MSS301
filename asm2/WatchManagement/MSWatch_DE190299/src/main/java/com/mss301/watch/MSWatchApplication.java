@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-// [TODO-1.1, TODO-1.3: MSWatch starter application with OpenFeign]
+// [TODO-1.1, TODO-1.3, TODO-6.7: MSWatch application with OpenFeign]
 @SpringBootApplication
 @EnableFeignClients
 public class MSWatchApplication {
