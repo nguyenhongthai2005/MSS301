@@ -85,6 +85,31 @@
                          "key":  "todayDate",
                          "value":  "2026-11-06",
                          "type":  "string"
+                     },
+                     {
+                         "key":  "adminUsername",
+                         "type":  "string",
+                         "value":  "adminsys"
+                     },
+                     {
+                         "key":  "staffUsername",
+                         "type":  "string",
+                         "value":  "staff02"
+                     },
+                     {
+                         "key":  "memberUsername",
+                         "type":  "string",
+                         "value":  "member01"
+                     },
+                     {
+                         "key":  "inactiveUsername",
+                         "type":  "string",
+                         "value":  "member02"
+                     },
+                     {
+                         "key":  "defaultPassword",
+                         "type":  "string",
+                         "value":  "@1"
                      }
                  ],
     "event":  [
@@ -93,7 +118,7 @@
                       "script":  {
                                      "type":  "text/javascript",
                                      "exec":  [
-                                                  "pm.collectionVariables.set(\u0027todayDate\u0027, new Date().toISOString().slice(0, 10));"
+                                                  "pm.collectionVariables.set(\u0027todayDate\u0027, new Date().toISOString().slice(0, 10)); try { pm.environment.set(\u0027todayDate\u0027, new Date().toISOString().slice(0, 10)); } catch(e){}"
                                               ]
                                  }
                   }
@@ -115,7 +140,7 @@
                                                                  ],
                                                       "body":  {
                                                                    "mode":  "raw",
-                                                                   "raw":  "{\"username\":\"admin\",\"password\":\"@1\"}",
+                                                                   "raw":  "{\"username\":\"adminsys\",\"password\":\"@1\"}",
                                                                    "options":  {
                                                                                    "raw":  {
                                                                                                "language":  "json"
@@ -143,8 +168,8 @@
                                                                                     "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var json = pm.response.json();",
                                                                                     "pm.test(\u0027Login success\u0027, function () { pm.expect(json.success).to.be.true; });",
-                                                                                    "pm.collectionVariables.set(\u0027adminToken\u0027, json.data.accessToken);",
-                                                                                    "pm.collectionVariables.set(\u0027adminRefreshToken\u0027, json.data.refreshToken);"
+                                                                                    "pm.collectionVariables.set(\u0027adminToken\u0027, json.data.accessToken); try { pm.environment.set(\u0027adminToken\u0027, json.data.accessToken); } catch(e){}",
+                                                                                    "pm.collectionVariables.set(\u0027adminRefreshToken\u0027, json.data.refreshToken); try { pm.environment.set(\u0027adminRefreshToken\u0027, json.data.refreshToken); } catch(e){}"
                                                                                 ]
                                                                    }
                                                     }
@@ -190,7 +215,7 @@
                                                                        "exec":  [
                                                                                     "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var json = pm.response.json();",
-                                                                                    "pm.collectionVariables.set(\u0027staffToken\u0027, json.data.accessToken);"
+                                                                                    "pm.collectionVariables.set(\u0027staffToken\u0027, json.data.accessToken); try { pm.environment.set(\u0027staffToken\u0027, json.data.accessToken); } catch(e){}"
                                                                                 ]
                                                                    }
                                                     }
@@ -236,7 +261,7 @@
                                                                        "exec":  [
                                                                                     "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var json = pm.response.json();",
-                                                                                    "pm.collectionVariables.set(\u0027memberToken\u0027, json.data.accessToken);"
+                                                                                    "pm.collectionVariables.set(\u0027memberToken\u0027, json.data.accessToken); try { pm.environment.set(\u0027memberToken\u0027, json.data.accessToken); } catch(e){}"
                                                                                 ]
                                                                    }
                                                     }
@@ -399,7 +424,7 @@
                                                 ]
                                   },
                                   {
-                                      "name":  "01.5 - Login Inactive User staff03 -\u003e 403",
+                                      "name":  "01.5 - Login Inactive User member02 -\u003e 403",
                                       "request":  {
                                                       "method":  "POST",
                                                       "header":  [
@@ -411,7 +436,7 @@
                                                                  ],
                                                       "body":  {
                                                                    "mode":  "raw",
-                                                                   "raw":  "{\"username\":\"staff03\",\"password\":\"@1\"}",
+                                                                   "raw":  "{\"username\":\"member02\",\"password\":\"@1\"}",
                                                                    "options":  {
                                                                                    "raw":  {
                                                                                                "language":  "json"
@@ -789,7 +814,7 @@
                                                                        "exec":  [
                                                                                     "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var json = pm.response.json();",
-                                                                                    "pm.collectionVariables.set(\u0027brand1InitialCount\u0027, json.data.totalWatches);"
+                                                                                    "pm.collectionVariables.set(\u0027brand1InitialCount\u0027, json.data.totalWatches); try { pm.environment.set(\u0027brand1InitialCount\u0027, json.data.totalWatches); } catch(e){}"
                                                                                 ]
                                                                    }
                                                     }
@@ -841,8 +866,8 @@
                                                                                     "var json = pm.response.json();",
                                                                                     "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027);",
                                                                                     "pm.test(\u0027Has X-Saga-Id header\u0027, function () { pm.expect(sagaId).to.not.be.empty; });",
-                                                                                    "pm.collectionVariables.set(\u0027newWatchId\u0027, json.data.watchId);",
-                                                                                    "pm.collectionVariables.set(\u0027scenarioASagaId\u0027, sagaId);"
+                                                                                    "pm.collectionVariables.set(\u0027newWatchId\u0027, json.data.watchId); try { pm.environment.set(\u0027newWatchId\u0027, json.data.watchId); } catch(e){}",
+                                                                                    "pm.collectionVariables.set(\u0027scenarioASagaId\u0027, sagaId); try { pm.environment.set(\u0027scenarioASagaId\u0027, sagaId); } catch(e){}"
                                                                                 ]
                                                                    }
                                                     }
@@ -1014,7 +1039,7 @@
                                                                                     "pm.test(\u0027Status is 400 Bad Request\u0027, function () { pm.response.to.have.status(400); });",
                                                                                     "var json = pm.response.json();",
                                                                                     "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027) || json.data.sagaId;",
-                                                                                    "pm.collectionVariables.set(\u0027scenarioBSagaId\u0027, sagaId);",
+                                                                                    "pm.collectionVariables.set(\u0027scenarioBSagaId\u0027, sagaId); try { pm.environment.set(\u0027scenarioBSagaId\u0027, sagaId); } catch(e){}",
                                                                                     "pm.test(\u0027Saga status is COMPENSATED\u0027, function () { pm.expect(json.data.sagaStatus).to.eql(\u0027COMPENSATED\u0027); });",
                                                                                     "pm.test(\u0027Failed step is ASSIGN_BRAND\u0027, function () { pm.expect(json.data.failedStep).to.eql(\u0027ASSIGN_BRAND\u0027); });"
                                                                                 ]
@@ -1135,7 +1160,7 @@
                                                                        "exec":  [
                                                                                     "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var json = pm.response.json();",
-                                                                                    "pm.collectionVariables.set(\u0027brand1BeforeC\u0027, json.data.totalWatches);"
+                                                                                    "pm.collectionVariables.set(\u0027brand1BeforeC\u0027, json.data.totalWatches); try { pm.environment.set(\u0027brand1BeforeC\u0027, json.data.totalWatches); } catch(e){}"
                                                                                 ]
                                                                    }
                                                     }
@@ -1191,7 +1216,7 @@
                                                                                     "pm.test(\u0027Status is 500 Internal Server Error\u0027, function () { pm.response.to.have.status(500); });",
                                                                                     "var json = pm.response.json();",
                                                                                     "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027) || json.data.sagaId;",
-                                                                                    "pm.collectionVariables.set(\u0027scenarioCSagaId\u0027, sagaId);",
+                                                                                    "pm.collectionVariables.set(\u0027scenarioCSagaId\u0027, sagaId); try { pm.environment.set(\u0027scenarioCSagaId\u0027, sagaId); } catch(e){}",
                                                                                     "pm.test(\u0027Saga status is COMPENSATED\u0027, function () { pm.expect(json.data.sagaStatus).to.eql(\u0027COMPENSATED\u0027); });"
                                                                                 ]
                                                                    }
@@ -1328,7 +1353,7 @@
                                                                        "exec":  [
                                                                                     "pm.test(\u0027Status is 200 OK\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027);",
-                                                                                    "pm.collectionVariables.set(\u0027scenarioDSagaId\u0027, sagaId);"
+                                                                                    "pm.collectionVariables.set(\u0027scenarioDSagaId\u0027, sagaId); try { pm.environment.set(\u0027scenarioDSagaId\u0027, sagaId); } catch(e){}"
                                                                                 ]
                                                                    }
                                                     }
@@ -1419,7 +1444,7 @@
                                                                                     "pm.test(\u0027Status is 400 Bad Request\u0027, function () { pm.response.to.have.status(400); });",
                                                                                     "var json = pm.response.json();",
                                                                                     "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027) || json.data.sagaId;",
-                                                                                    "pm.collectionVariables.set(\u0027scenarioESagaId\u0027, sagaId);",
+                                                                                    "pm.collectionVariables.set(\u0027scenarioESagaId\u0027, sagaId); try { pm.environment.set(\u0027scenarioESagaId\u0027, sagaId); } catch(e){}",
                                                                                     "pm.test(\u0027Saga status is COMPENSATED\u0027, function () { pm.expect(json.data.sagaStatus).to.eql(\u0027COMPENSATED\u0027); });"
                                                                                 ]
                                                                    }
@@ -1541,7 +1566,7 @@
                                                                                     "pm.test(\u0027Status is 500 Internal Server Error\u0027, function () { pm.response.to.have.status(500); });",
                                                                                     "var json = pm.response.json();",
                                                                                     "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027) || json.data.sagaId;",
-                                                                                    "pm.collectionVariables.set(\u0027scenarioFSagaId\u0027, sagaId);",
+                                                                                    "pm.collectionVariables.set(\u0027scenarioFSagaId\u0027, sagaId); try { pm.environment.set(\u0027scenarioFSagaId\u0027, sagaId); } catch(e){}",
                                                                                     "pm.test(\u0027Saga status is COMPENSATED\u0027, function () { pm.expect(json.data.sagaStatus).to.eql(\u0027COMPENSATED\u0027); });"
                                                                                 ]
                                                                    }
@@ -1618,7 +1643,7 @@
                                                                        "exec":  [
                                                                                     "pm.test(\u0027Status is 200 OK (Pivot committed -\u003e Bỏ qua lỗi giả)\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027);",
-                                                                                    "pm.collectionVariables.set(\u0027scenarioGSagaId\u0027, sagaId);"
+                                                                                    "pm.collectionVariables.set(\u0027scenarioGSagaId\u0027, sagaId); try { pm.environment.set(\u0027scenarioGSagaId\u0027, sagaId); } catch(e){}"
                                                                                 ]
                                                                    }
                                                     }
