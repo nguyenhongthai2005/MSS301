@@ -25,6 +25,7 @@ public class DataInitializer implements CommandLineRunner {
             String encoded = passwordEncoder.encode("@1");
             List<StoreAccount> accounts = List.of(
                 StoreAccount.builder().username("adminsys").email("admin@drawingpen.com.vn").password(encoded).role(1).isActive(true).build(),
+                StoreAccount.builder().username("admin").email("admin2@drawingpen.com.vn").password(encoded).role(1).isActive(true).build(),
                 StoreAccount.builder().username("staff02").email("staff02@drawingpen.com.vn").password(encoded).role(2).isActive(true).build(),
                 StoreAccount.builder().username("member01").email("member01@drawingpen.com.vn").password(encoded).role(3).isActive(true).build(),
                 StoreAccount.builder().username("member02").email("member02@drawingpen.com.vn").password(encoded).role(3).isActive(false).build(),
