@@ -1,4 +1,4 @@
-﻿{
+{
     "info":  {
                  "_postman_id":  "mss301-watch-saga-proof",
                  "name":  "MSS301 - Watch Management Saga Pattern",
@@ -83,7 +83,7 @@
                      },
                      {
                          "key":  "todayDate",
-                         "value":  "2026-11-06",
+                         "value":  "2026-11-07",
                          "type":  "string"
                      },
                      {
@@ -118,7 +118,7 @@
                       "script":  {
                                      "type":  "text/javascript",
                                      "exec":  [
-                                                  "var d = new Date().toISOString().slice(0, 10);",
+                                                  "var now = new Date(); var d = now.getFullYear() + \"-\" + String(now.getMonth()+1).padStart(2, \"0\") + \"-\" + String(now.getDate()).padStart(2, \"0\");",
                                                   "pm.collectionVariables.set(\u0027todayDate\u0027, d);",
                                                   "try { pm.environment.set(\u0027todayDate\u0027, d); } catch(e){}",
                                                   "",
@@ -988,7 +988,7 @@
                                                                                     "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var json = pm.response.json();",
                                                                                     "var newId = Number(pm.collectionVariables.get(\u0027newWatchId\u0027));",
-                                                                                    "pm.test(\u0027Watch mới nằm ở đầu danh sách\u0027, function () { pm.expect(json.data[0].watchId).to.eql(newId); });"
+                                                                                    "pm.test(\u0027Watch m?i n?m ? d?u danh sách\u0027, function () { pm.expect(json.data[0].watchId).to.eql(newId); });"
                                                                                 ]
                                                                    }
                                                     }
@@ -1028,8 +1028,8 @@
                                                                                     "var json = pm.response.json();",
                                                                                     "var expected = Number(pm.collectionVariables.get(\u0027brand1InitialCount\u0027)) + 1;",
                                                                                     "var newId = Number(pm.collectionVariables.get(\u0027newWatchId\u0027));",
-                                                                                    "pm.test(\u0027Tổng số watch của Brand 1 tăng 1\u0027, function () { pm.expect(json.data.totalWatches).to.eql(expected); });",
-                                                                                    "pm.test(\u0027Brand 1 chứa newWatchId\u0027, function () { pm.expect(json.data.watchIds).to.include(newId); });"
+                                                                                    "pm.test(\u0027T?ng s? watch c?a Brand 1 tang 1\u0027, function () { pm.expect(json.data.totalWatches).to.eql(expected); });",
+                                                                                    "pm.test(\u0027Brand 1 ch?a newWatchId\u0027, function () { pm.expect(json.data.watchIds).to.include(newId); });"
                                                                                 ]
                                                                    }
                                                     }
@@ -1162,7 +1162,7 @@
                                                                                     "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var json = pm.response.json();",
                                                                                     "var found = json.data.some(function(w) { return w.name === \u0027Invalid Brand Watch 999\u0027; });",
-                                                                                    "pm.test(\u0027Watch 999 đã bị xoá bởi compensation\u0027, function () { pm.expect(found).to.be.false; });"
+                                                                                    "pm.test(\u0027Watch 999 dã b? xoá b?i compensation\u0027, function () { pm.expect(found).to.be.false; });"
                                                                                 ]
                                                                    }
                                                     }
@@ -1202,7 +1202,7 @@
                                                                                     "pm.test(\u0027Saga status is COMPENSATED\u0027, function () { pm.expect(json.data.status).to.eql(\u0027COMPENSATED\u0027); });",
                                                                                     "var steps = json.data.steps;",
                                                                                     "var comp = steps.find(function(s) { return s.stepName === \u0027DELETE_WATCH\u0027 \u0026\u0026 s.phase === \u0027COMPENSATE\u0027; });",
-                                                                                    "pm.test(\u0027Có bước compensation DELETE_WATCH\u0027, function () {",
+                                                                                    "pm.test(\u0027Có bu?c compensation DELETE_WATCH\u0027, function () {",
                                                                                     "    pm.expect(comp).to.not.be.undefined;",
                                                                                     "    pm.expect(comp.result).to.eql(\u0027SUCCESS\u0027);",
                                                                                     "});"
@@ -1344,7 +1344,7 @@
                                                                                     "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var json = pm.response.json();",
                                                                                     "var expected = Number(pm.collectionVariables.get(\u0027brand1BeforeC\u0027));",
-                                                                                    "pm.test(\u0027Brand 1 count giữ nguyên không đổi\u0027, function () { pm.expect(json.data.totalWatches).to.eql(expected); });"
+                                                                                    "pm.test(\u0027Brand 1 count gi? nguyên không d?i\u0027, function () { pm.expect(json.data.totalWatches).to.eql(expected); });"
                                                                                 ]
                                                                    }
                                                     }
@@ -1382,7 +1382,7 @@
                                                                                     "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var json = pm.response.json();",
                                                                                     "var compSteps = json.data.steps.filter(function(s) { return s.phase === \u0027COMPENSATE\u0027; }).map(function(s) { return s.stepName; });",
-                                                                                    "pm.test(\u0027LIFO: UNASSIGN_BRAND bù trừ trước DELETE_WATCH\u0027, function () {",
+                                                                                    "pm.test(\u0027LIFO: UNASSIGN_BRAND bù tr? tru?c DELETE_WATCH\u0027, function () {",
                                                                                     "    pm.expect(compSteps[0]).to.eql(\u0027UNASSIGN_BRAND\u0027);",
                                                                                     "    pm.expect(compSteps[1]).to.eql(\u0027DELETE_WATCH\u0027);",
                                                                                     "});"
@@ -1480,7 +1480,7 @@
                                                                                     "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var json = pm.response.json();",
                                                                                     "var newId = Number(pm.collectionVariables.get(\u0027newWatchId\u0027));",
-                                                                                    "pm.test(\u0027Brand 2 chứa newWatchId\u0027, function () { pm.expect(json.data.watchIds).to.include(newId); });"
+                                                                                    "pm.test(\u0027Brand 2 ch?a newWatchId\u0027, function () { pm.expect(json.data.watchIds).to.include(newId); });"
                                                                                 ]
                                                                    }
                                                     }
@@ -1567,8 +1567,8 @@
                                                                                     "var json = pm.response.json();",
                                                                                     "var newId = Number(pm.collectionVariables.get(\u0027newWatchId\u0027));",
                                                                                     "var watch = json.data.find(function(w) { return w.watchId === newId; });",
-                                                                                    "pm.test(\u0027Watch vẫn giữ name cũ\u0027, function () { pm.expect(watch.name).to.eql(\u0027Updated Saga Test Watch Pro\u0027); });",
-                                                                                    "pm.test(\u0027Watch vẫn thuộc Brand 2\u0027, function () { pm.expect(watch.brandId).to.eql(2); });"
+                                                                                    "pm.test(\u0027Watch v?n gi? name cu\u0027, function () { pm.expect(watch.name).to.eql(\u0027Updated Saga Test Watch Pro\u0027); });",
+                                                                                    "pm.test(\u0027Watch v?n thu?c Brand 2\u0027, function () { pm.expect(watch.brandId).to.eql(2); });"
                                                                                 ]
                                                                    }
                                                     }
@@ -1606,7 +1606,7 @@
                                                                                     "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var json = pm.response.json();",
                                                                                     "var comp = json.data.steps.find(function(s) { return s.stepName === \u0027RESTORE_WATCH\u0027 \u0026\u0026 s.phase === \u0027COMPENSATE\u0027; });",
-                                                                                    "pm.test(\u0027Có bước RESTORE_WATCH thành công\u0027, function () { pm.expect(comp.result).to.eql(\u0027SUCCESS\u0027); });"
+                                                                                    "pm.test(\u0027Có bu?c RESTORE_WATCH thành công\u0027, function () { pm.expect(comp.result).to.eql(\u0027SUCCESS\u0027); });"
                                                                                 ]
                                                                    }
                                                     }
@@ -1689,7 +1689,7 @@
                                                                                     "var json = pm.response.json();",
                                                                                     "var newId = Number(pm.collectionVariables.get(\u0027newWatchId\u0027));",
                                                                                     "var exists = json.data.some(function(w) { return w.watchId === newId; });",
-                                                                                    "pm.test(\u0027Watch vẫn còn tồn tại\u0027, function () { pm.expect(exists).to.be.true; });"
+                                                                                    "pm.test(\u0027Watch v?n còn t?n t?i\u0027, function () { pm.expect(exists).to.be.true; });"
                                                                                 ]
                                                                    }
                                                     }
@@ -1729,7 +1729,7 @@
                                                         "script":  {
                                                                        "type":  "text/javascript",
                                                                        "exec":  [
-                                                                                    "pm.test(\u0027Status is 200 OK (Pivot committed -\u003e Bỏ qua lỗi giả)\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "pm.test(\u0027Status is 200 OK (Pivot committed -\u003e B? qua l?i gi?)\u0027, function () { pm.response.to.have.status(200); });",
                                                                                     "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027);",
                                                                                     "pm.collectionVariables.set(\u0027scenarioGSagaId\u0027, sagaId); try { pm.environment.set(\u0027scenarioGSagaId\u0027, sagaId); } catch(e){}"
                                                                                 ]
@@ -1765,7 +1765,7 @@
                                                                                     "var json = pm.response.json();",
                                                                                     "var newId = Number(pm.collectionVariables.get(\u0027newWatchId\u0027));",
                                                                                     "var exists = json.data.some(function(w) { return w.watchId === newId; });",
-                                                                                    "pm.test(\u0027Watch đã bị xoá hoàn toàn\u0027, function () { pm.expect(exists).to.be.false; });"
+                                                                                    "pm.test(\u0027Watch dã b? xoá hoàn toàn\u0027, function () { pm.expect(exists).to.be.false; });"
                                                                                 ]
                                                                    }
                                                     }
@@ -1804,7 +1804,7 @@
                                                                                     "var json = pm.response.json();",
                                                                                     "pm.test(\u0027Saga status is COMPLETED\u0027, function () { pm.expect(json.data.status).to.eql(\u0027COMPLETED\u0027); });",
                                                                                     "var skipped = json.data.steps.find(function(s) { return s.result === \u0027SKIPPED\u0027; });",
-                                                                                    "pm.test(\u0027Bước lỗi giả bị SKIPPED vì là pivot\u0027, function () { pm.expect(skipped).to.not.be.undefined; });"
+                                                                                    "pm.test(\u0027Bu?c l?i gi? b? SKIPPED vì là pivot\u0027, function () { pm.expect(skipped).to.not.be.undefined; });"
                                                                                 ]
                                                                    }
                                                     }
