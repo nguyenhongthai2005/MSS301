@@ -1,0 +1,1778 @@
+﻿{
+    "info":  {
+                 "_postman_id":  "mss301-watch-saga-proof",
+                 "name":  "MSS301 - Watch Management Saga Pattern",
+                 "description":  "Automated Saga Orchestration test suite for MSS301 Assignment 2",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "variable":  [
+                     {
+                         "key":  "baseUrl",
+                         "value":  "http://localhost:8080",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "adminToken",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "adminRefreshToken",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "staffToken",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "memberToken",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "newWatchId",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "brand1InitialCount",
+                         "value":  "0",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "brand1BeforeC",
+                         "value":  "0",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "scenarioASagaId",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "scenarioBSagaId",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "scenarioCSagaId",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "scenarioDSagaId",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "scenarioESagaId",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "scenarioFSagaId",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "scenarioGSagaId",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "todayDate",
+                         "value":  "2026-11-06",
+                         "type":  "string"
+                     }
+                 ],
+    "event":  [
+                  {
+                      "listen":  "prerequest",
+                      "script":  {
+                                     "type":  "text/javascript",
+                                     "exec":  [
+                                                  "pm.collectionVariables.set(\u0027todayDate\u0027, new Date().toISOString().slice(0, 10));"
+                                              ]
+                                 }
+                  }
+              ],
+    "item":  [
+                 {
+                     "name":  "00 - Auth \u0026 Token Setup",
+                     "item":  [
+                                  {
+                                      "name":  "00.1 - Login Admin",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"username\":\"admin\",\"password\":\"@1\"}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/auth/login",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "auth",
+                                                                               "login"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "pm.test(\u0027Login success\u0027, function () { pm.expect(json.success).to.be.true; });",
+                                                                                    "pm.collectionVariables.set(\u0027adminToken\u0027, json.data.accessToken);",
+                                                                                    "pm.collectionVariables.set(\u0027adminRefreshToken\u0027, json.data.refreshToken);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "00.2 - Login Staff02",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"username\":\"staff02\",\"password\":\"@1\"}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/auth/login",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "auth",
+                                                                               "login"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "pm.collectionVariables.set(\u0027staffToken\u0027, json.data.accessToken);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "00.3 - Login Member01",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"username\":\"member01\",\"password\":\"@1\"}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/auth/login",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "auth",
+                                                                               "login"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "pm.collectionVariables.set(\u0027memberToken\u0027, json.data.accessToken);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "01 - Security \u0026 Gateway Tests",
+                     "item":  [
+                                  {
+                                      "name":  "01.1 - GET /api/watches Public (No Token) -\u003e 200",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "pm.test(\u0027Contains at least 10 watches\u0027, function () { pm.expect(json.data.length).to.be.at.least(10); });",
+                                                                                    "pm.test(\u0027Contains categoryName\u0027, function () { pm.expect(json.data[0].categoryName).to.not.be.empty; });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "01.2 - GET /api/brands Without Token -\u003e 401",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/brands",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "brands"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 401 Unauthorized\u0027, function () { pm.response.to.have.status(401); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "01.3 - DELETE Watch Without Token with Fake Header -\u003e 401",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "X-User-Role",
+                                                                         "value":  "1",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches/1",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches",
+                                                                               "1"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 401 Unauthorized\u0027, function () { pm.response.to.have.status(401); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "01.4 - Staff Token with Fake Admin Role -\u003e 403",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{staffToken}}",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "X-User-Role",
+                                                                         "value":  "1",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"name\":\"Fake Admin Watch\",\"categoryId\":1,\"brandId\":1,\"caseMaterial\":\"Steel\",\"strapMaterial\":\"Steel\",\"waterpMaterial\":\"100m\",\"price\":500,\"releaseDate\":\"{{todayDate}}\",\"stock\":10}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 403 Forbidden\u0027, function () { pm.response.to.have.status(403); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "01.5 - Login Inactive User staff03 -\u003e 403",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"username\":\"staff03\",\"password\":\"@1\"}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/auth/login",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "auth",
+                                                                               "login"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 403 Forbidden\u0027, function () { pm.response.to.have.status(403); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "01.6 - Refresh Token -\u003e 200",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"refreshToken\":\"{{adminRefreshToken}}\"}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/auth/refresh",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "auth",
+                                                                               "refresh"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200 OK\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "pm.test(\u0027Got new access token\u0027, function () { pm.expect(json.data.accessToken).to.not.be.empty; });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "01.7 - Refresh Token Used as Bearer Token -\u003e 401",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminRefreshToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/brands",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "brands"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 401 Unauthorized\u0027, function () { pm.response.to.have.status(401); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "01.8 - Direct Call to Internal Saga API via Gateway -\u003e 404",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/internal/brands/1/watches/1",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "internal",
+                                                                               "brands",
+                                                                               "1",
+                                                                               "watches",
+                                                                               "1"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 404 Not Found\u0027, function () { pm.response.to.have.status(404); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "02 - Validation Tests (Before Saga)",
+                     "item":  [
+                                  {
+                                      "name":  "02.1 - Watch Name \u003c= 10 characters -\u003e 400",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"name\":\"Short\",\"categoryId\":1,\"brandId\":1,\"caseMaterial\":\"Steel\",\"strapMaterial\":\"Steel\",\"waterpMaterial\":\"100m\",\"price\":500,\"releaseDate\":\"{{todayDate}}\",\"stock\":10}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 400 Bad Request\u0027, function () { pm.response.to.have.status(400); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "02.2 - Price \u003c 100 -\u003e 400",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"name\":\"Test Watch Long Name\",\"categoryId\":1,\"brandId\":1,\"caseMaterial\":\"Steel\",\"strapMaterial\":\"Steel\",\"waterpMaterial\":\"100m\",\"price\":99,\"releaseDate\":\"{{todayDate}}\",\"stock\":10}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 400 Bad Request\u0027, function () { pm.response.to.have.status(400); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "02.3 - ReleaseDate is not today -\u003e 400",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"name\":\"Test Watch Long Name\",\"categoryId\":1,\"brandId\":1,\"caseMaterial\":\"Steel\",\"strapMaterial\":\"Steel\",\"waterpMaterial\":\"100m\",\"price\":500,\"releaseDate\":\"2020-01-01\",\"stock\":10}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 400 Bad Request\u0027, function () { pm.response.to.have.status(400); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "02.4 - CategoryId does not exist -\u003e 400",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"name\":\"Test Watch Long Name\",\"categoryId\":999,\"brandId\":1,\"caseMaterial\":\"Steel\",\"strapMaterial\":\"Steel\",\"waterpMaterial\":\"100m\",\"price\":500,\"releaseDate\":\"{{todayDate}}\",\"stock\":10}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 400 Bad Request\u0027, function () { pm.response.to.have.status(400); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "03 - Scenario A: CREATE Watch (Happy Path)",
+                     "item":  [
+                                  {
+                                      "name":  "03.1 - Pre-check: Get Brand 1 Watches",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/brands/1/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "brands",
+                                                                               "1",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "pm.collectionVariables.set(\u0027brand1InitialCount\u0027, json.data.totalWatches);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "03.2 - POST Create Watch (Brand 1) -\u003e 201",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"name\":\"Saga Proof Chronograph Pro\",\"categoryId\":1,\"brandId\":1,\"caseMaterial\":\"Titanium\",\"strapMaterial\":\"Rubber\",\"waterpMaterial\":\"200m\",\"price\":2500.00,\"releaseDate\":\"{{todayDate}}\",\"stock\":50}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 201 Created\u0027, function () { pm.response.to.have.status(201); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027);",
+                                                                                    "pm.test(\u0027Has X-Saga-Id header\u0027, function () { pm.expect(sagaId).to.not.be.empty; });",
+                                                                                    "pm.collectionVariables.set(\u0027newWatchId\u0027, json.data.watchId);",
+                                                                                    "pm.collectionVariables.set(\u0027scenarioASagaId\u0027, sagaId);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "03.3 - Verify New Watch at Top of List",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var newId = Number(pm.collectionVariables.get(\u0027newWatchId\u0027));",
+                                                                                    "pm.test(\u0027Watch mới nằm ở đầu danh sách\u0027, function () { pm.expect(json.data[0].watchId).to.eql(newId); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "03.4 - Verify Brand 1 Count Incremented by 1",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/brands/1/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "brands",
+                                                                               "1",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var expected = Number(pm.collectionVariables.get(\u0027brand1InitialCount\u0027)) + 1;",
+                                                                                    "var newId = Number(pm.collectionVariables.get(\u0027newWatchId\u0027));",
+                                                                                    "pm.test(\u0027Tổng số watch của Brand 1 tăng 1\u0027, function () { pm.expect(json.data.totalWatches).to.eql(expected); });",
+                                                                                    "pm.test(\u0027Brand 1 chứa newWatchId\u0027, function () { pm.expect(json.data.watchIds).to.include(newId); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "03.5 - Verify Saga A Log (COMPLETED)",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/sagas/{{scenarioASagaId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "sagas",
+                                                                               "{{scenarioASagaId}}"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "pm.test(\u0027Saga status is COMPLETED\u0027, function () { pm.expect(json.data.status).to.eql(\u0027COMPLETED\u0027); });",
+                                                                                    "var names = json.data.steps.map(function(s) { return s.stepName; });",
+                                                                                    "pm.test(\u0027Saga steps executed successfully\u0027, function () {",
+                                                                                    "    pm.expect(names).to.include(\u0027CREATE_WATCH\u0027);",
+                                                                                    "    pm.expect(names).to.include(\u0027ASSIGN_BRAND\u0027);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "04 - Scenario B: CREATE with Brand 999 (Compensated)",
+                     "item":  [
+                                  {
+                                      "name":  "04.1 - POST Create Watch (Brand 999) -\u003e 400 COMPENSATED",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"name\":\"Invalid Brand Watch 999\",\"categoryId\":1,\"brandId\":999,\"caseMaterial\":\"Ceramic\",\"strapMaterial\":\"Nylon\",\"waterpMaterial\":\"100m\",\"price\":1200.00,\"releaseDate\":\"{{todayDate}}\",\"stock\":20}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 400 Bad Request\u0027, function () { pm.response.to.have.status(400); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027) || json.data.sagaId;",
+                                                                                    "pm.collectionVariables.set(\u0027scenarioBSagaId\u0027, sagaId);",
+                                                                                    "pm.test(\u0027Saga status is COMPENSATED\u0027, function () { pm.expect(json.data.sagaStatus).to.eql(\u0027COMPENSATED\u0027); });",
+                                                                                    "pm.test(\u0027Failed step is ASSIGN_BRAND\u0027, function () { pm.expect(json.data.failedStep).to.eql(\u0027ASSIGN_BRAND\u0027); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "04.2 - Verify Watch Does Not Exist in DB",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var found = json.data.some(function(w) { return w.name === \u0027Invalid Brand Watch 999\u0027; });",
+                                                                                    "pm.test(\u0027Watch 999 đã bị xoá bởi compensation\u0027, function () { pm.expect(found).to.be.false; });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "04.3 - Verify Saga B Log (DELETE_WATCH Compensation)",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/sagas/{{scenarioBSagaId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "sagas",
+                                                                               "{{scenarioBSagaId}}"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "pm.test(\u0027Saga status is COMPENSATED\u0027, function () { pm.expect(json.data.status).to.eql(\u0027COMPENSATED\u0027); });",
+                                                                                    "var steps = json.data.steps;",
+                                                                                    "var comp = steps.find(function(s) { return s.stepName === \u0027DELETE_WATCH\u0027 \u0026\u0026 s.phase === \u0027COMPENSATE\u0027; });",
+                                                                                    "pm.test(\u0027Có bước compensation DELETE_WATCH\u0027, function () {",
+                                                                                    "    pm.expect(comp).to.not.be.undefined;",
+                                                                                    "    pm.expect(comp.result).to.eql(\u0027SUCCESS\u0027);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "05 - Scenario C: Fault Injection after Step 2 (LIFO Compensation)",
+                     "item":  [
+                                  {
+                                      "name":  "05.1 - Pre-check: Get Brand 1 Watches Count",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/brands/1/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "brands",
+                                                                               "1",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "pm.collectionVariables.set(\u0027brand1BeforeC\u0027, json.data.totalWatches);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "05.2 - POST Create Watch (X-Saga-Fail-After-Step: 2) -\u003e 500",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "X-Saga-Fail-After-Step",
+                                                                         "value":  "2",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"name\":\"Fault Injection Test 2\",\"categoryId\":1,\"brandId\":1,\"caseMaterial\":\"Steel\",\"strapMaterial\":\"Leather\",\"waterpMaterial\":\"100m\",\"price\":1500.00,\"releaseDate\":\"{{todayDate}}\",\"stock\":15}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 500 Internal Server Error\u0027, function () { pm.response.to.have.status(500); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027) || json.data.sagaId;",
+                                                                                    "pm.collectionVariables.set(\u0027scenarioCSagaId\u0027, sagaId);",
+                                                                                    "pm.test(\u0027Saga status is COMPENSATED\u0027, function () { pm.expect(json.data.sagaStatus).to.eql(\u0027COMPENSATED\u0027); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "05.3 - Verify Brand 1 Count Unchanged",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/brands/1/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "brands",
+                                                                               "1",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var expected = Number(pm.collectionVariables.get(\u0027brand1BeforeC\u0027));",
+                                                                                    "pm.test(\u0027Brand 1 count giữ nguyên không đổi\u0027, function () { pm.expect(json.data.totalWatches).to.eql(expected); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "05.4 - Verify LIFO Compensation Order (UNASSIGN before DELETE)",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/sagas/{{scenarioCSagaId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "sagas",
+                                                                               "{{scenarioCSagaId}}"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var compSteps = json.data.steps.filter(function(s) { return s.phase === \u0027COMPENSATE\u0027; }).map(function(s) { return s.stepName; });",
+                                                                                    "pm.test(\u0027LIFO: UNASSIGN_BRAND bù trừ trước DELETE_WATCH\u0027, function () {",
+                                                                                    "    pm.expect(compSteps[0]).to.eql(\u0027UNASSIGN_BRAND\u0027);",
+                                                                                    "    pm.expect(compSteps[1]).to.eql(\u0027DELETE_WATCH\u0027);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "06 - Scenario D \u0026 E: UPDATE Watch (Happy \u0026 Compensated)",
+                     "item":  [
+                                  {
+                                      "name":  "06.1 - PUT Update Watch Brand 1 -\u003e Brand 2 (Happy Path) -\u003e 200",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"name\":\"Updated Saga Test Watch Pro\",\"categoryId\":2,\"brandId\":2,\"caseMaterial\":\"Gold\",\"strapMaterial\":\"Alligator\",\"waterpMaterial\":\"50m\",\"price\":9999.00,\"releaseDate\":\"{{todayDate}}\",\"stock\":10}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches/{{newWatchId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches",
+                                                                               "{{newWatchId}}"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200 OK\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027);",
+                                                                                    "pm.collectionVariables.set(\u0027scenarioDSagaId\u0027, sagaId);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "06.2 - Verify Brand 2 Contains newWatchId",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/brands/2/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "brands",
+                                                                               "2",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var newId = Number(pm.collectionVariables.get(\u0027newWatchId\u0027));",
+                                                                                    "pm.test(\u0027Brand 2 chứa newWatchId\u0027, function () { pm.expect(json.data.watchIds).to.include(newId); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "06.3 - PUT Update Watch with Brand 999 -\u003e 400 COMPENSATED",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"name\":\"Will Fail Brand 999 Watch\",\"categoryId\":2,\"brandId\":999,\"caseMaterial\":\"Gold\",\"strapMaterial\":\"Alligator\",\"waterpMaterial\":\"50m\",\"price\":9999.00,\"releaseDate\":\"{{todayDate}}\",\"stock\":10}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches/{{newWatchId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches",
+                                                                               "{{newWatchId}}"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 400 Bad Request\u0027, function () { pm.response.to.have.status(400); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027) || json.data.sagaId;",
+                                                                                    "pm.collectionVariables.set(\u0027scenarioESagaId\u0027, sagaId);",
+                                                                                    "pm.test(\u0027Saga status is COMPENSATED\u0027, function () { pm.expect(json.data.sagaStatus).to.eql(\u0027COMPENSATED\u0027); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "06.4 - Verify Data Restored to Previous Snapshot",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var newId = Number(pm.collectionVariables.get(\u0027newWatchId\u0027));",
+                                                                                    "var watch = json.data.find(function(w) { return w.watchId === newId; });",
+                                                                                    "pm.test(\u0027Watch vẫn giữ name cũ\u0027, function () { pm.expect(watch.name).to.eql(\u0027Updated Saga Test Watch Pro\u0027); });",
+                                                                                    "pm.test(\u0027Watch vẫn thuộc Brand 2\u0027, function () { pm.expect(watch.brandId).to.eql(2); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "06.5 - Verify Saga Log Has RESTORE_WATCH",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/sagas/{{scenarioESagaId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "sagas",
+                                                                               "{{scenarioESagaId}}"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var comp = json.data.steps.find(function(s) { return s.stepName === \u0027RESTORE_WATCH\u0027 \u0026\u0026 s.phase === \u0027COMPENSATE\u0027; });",
+                                                                                    "pm.test(\u0027Có bước RESTORE_WATCH thành công\u0027, function () { pm.expect(comp.result).to.eql(\u0027SUCCESS\u0027); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "07 - Scenario F \u0026 G: DELETE Watch \u0026 Pivot",
+                     "item":  [
+                                  {
+                                      "name":  "07.1 - DELETE Watch (X-Saga-Fail-After-Step: 1) -\u003e 500 COMPENSATED",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "X-Saga-Fail-After-Step",
+                                                                         "value":  "1",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches/{{newWatchId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches",
+                                                                               "{{newWatchId}}"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 500 Internal Server Error\u0027, function () { pm.response.to.have.status(500); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027) || json.data.sagaId;",
+                                                                                    "pm.collectionVariables.set(\u0027scenarioFSagaId\u0027, sagaId);",
+                                                                                    "pm.test(\u0027Saga status is COMPENSATED\u0027, function () { pm.expect(json.data.sagaStatus).to.eql(\u0027COMPENSATED\u0027); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "07.2 - Verify Watch Still Exists",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var newId = Number(pm.collectionVariables.get(\u0027newWatchId\u0027));",
+                                                                                    "var exists = json.data.some(function(w) { return w.watchId === newId; });",
+                                                                                    "pm.test(\u0027Watch vẫn còn tồn tại\u0027, function () { pm.expect(exists).to.be.true; });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "07.3 - DELETE Watch (X-Saga-Fail-After-Step: 2) -\u003e 200 COMPLETED (Pivot)",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     },
+                                                                     {
+                                                                         "key":  "X-Saga-Fail-After-Step",
+                                                                         "value":  "2",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches/{{newWatchId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches",
+                                                                               "{{newWatchId}}"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200 OK (Pivot committed -\u003e Bỏ qua lỗi giả)\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var sagaId = pm.response.headers.get(\u0027X-Saga-Id\u0027);",
+                                                                                    "pm.collectionVariables.set(\u0027scenarioGSagaId\u0027, sagaId);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "07.4 - Verify Watch is Permanently Deleted",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/watches",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "watches"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "var newId = Number(pm.collectionVariables.get(\u0027newWatchId\u0027));",
+                                                                                    "var exists = json.data.some(function(w) { return w.watchId === newId; });",
+                                                                                    "pm.test(\u0027Watch đã bị xoá hoàn toàn\u0027, function () { pm.expect(exists).to.be.false; });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "07.5 - Verify Saga Log Has FAULT_INJECTION SKIPPED",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/sagas/{{scenarioGSagaId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "sagas",
+                                                                               "{{scenarioGSagaId}}"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "pm.test(\u0027Saga status is COMPLETED\u0027, function () { pm.expect(json.data.status).to.eql(\u0027COMPLETED\u0027); });",
+                                                                                    "var skipped = json.data.steps.find(function(s) { return s.result === \u0027SKIPPED\u0027; });",
+                                                                                    "pm.test(\u0027Bước lỗi giả bị SKIPPED vì là pivot\u0027, function () { pm.expect(skipped).to.not.be.undefined; });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "08 - Saga Monitoring API",
+                     "item":  [
+                                  {
+                                      "name":  "08.1 - GET /api/sagas (Admin) -\u003e 200",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{adminToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/sagas?limit=20",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "sagas?limit=20"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "var json = pm.response.json();",
+                                                                                    "pm.test(\u0027Data is array\u0027, function () { pm.expect(json.data).to.be.an(\u0027array\u0027); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "08.2 - GET /api/sagas (Staff) -\u003e 403",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Authorization",
+                                                                         "value":  "Bearer {{staffToken}}",
+                                                                         "type":  "text"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/sagas",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "sagas"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 403 Forbidden\u0027, function () { pm.response.to.have.status(403); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 }
+             ]
+}
